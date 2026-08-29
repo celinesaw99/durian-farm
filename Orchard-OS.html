@@ -1,0 +1,1603 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orchard OS · 贝贝农场</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap">
+<style>
+/* ============================= TOKENS ============================= */
+:root{
+  --bg:#F4F7F1;
+  --surface:#FFFFFF;
+  --surface-2:#EAF0E4;
+  --surface-3:#DEE8D6;
+  --border:#D3DECB;
+  --text:#15231B;
+  --text-muted:#4C5D50;
+  --text-faint:#7C8B7E;
+  --primary:#1F4B3D;
+  --primary-strong:#0F2E23;
+  --primary-soft:#DCEAE1;
+  --secondary:#8A5A2E;
+  --secondary-soft:#F1E1CC;
+  --accent:#C98A22;
+  --accent-strong:#A86E15;
+  --accent-soft:#F6E3BB;
+  --good:#2E7D4F;
+  --good-soft:#DCEFE0;
+  --warn:#B4791A;
+  --warn-soft:#F7E7CB;
+  --critical:#B4402A;
+  --critical-soft:#F6DBD2;
+  --info:#2C6E8E;
+  --info-soft:#DCEBF1;
+  --shadow-color:220 20% 20%;
+  --facet:10px;
+  --facet-sm:6px;
+  --font-display:'Fraunces',ui-serif,Georgia,serif;
+  --font-body:'Manrope','Noto Sans SC',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1712;
+    --surface:#15211A;
+    --surface-2:#1B2A21;
+    --surface-3:#233428;
+    --border:#2B3D30;
+    --text:#E9F1E9;
+    --text-muted:#A6B8AA;
+    --text-faint:#7A8C7E;
+    --primary:#7FCBA0;
+    --primary-strong:#A6DDBC;
+    --primary-soft:#1E3A2C;
+    --secondary:#D7A768;
+    --secondary-soft:#33291B;
+    --accent:#EFBB4F;
+    --accent-strong:#F5CE79;
+    --accent-soft:#3A2E15;
+    --good:#5CBE85;
+    --good-soft:#1C3524;
+    --warn:#E0A23D;
+    --warn-soft:#3A2C12;
+    --critical:#E38267;
+    --critical-soft:#3B2019;
+    --info:#6BB6D6;
+    --info-soft:#183038;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1712;
+  --surface:#15211A;
+  --surface-2:#1B2A21;
+  --surface-3:#233428;
+  --border:#2B3D30;
+  --text:#E9F1E9;
+  --text-muted:#A6B8AA;
+  --text-faint:#7A8C7E;
+  --primary:#7FCBA0;
+  --primary-strong:#A6DDBC;
+  --primary-soft:#1E3A2C;
+  --secondary:#D7A768;
+  --secondary-soft:#33291B;
+  --accent:#EFBB4F;
+  --accent-strong:#F5CE79;
+  --accent-soft:#3A2E15;
+  --good:#5CBE85;
+  --good-soft:#1C3524;
+  --warn:#E0A23D;
+  --warn-soft:#3A2C12;
+  --critical:#E38267;
+  --critical-soft:#3B2019;
+  --info:#6BB6D6;
+  --info-soft:#183038;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;margin:0;text-wrap:balance;color:var(--text)}
+[data-lang="zh"] h1,[data-lang="zh"] h2,[data-lang="zh"] h3,[data-lang="zh"] h4{font-family:'Noto Sans SC',var(--font-body);font-weight:700}
+p{margin:0}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+::selection{background:var(--accent-soft);color:var(--primary-strong)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.tabnum{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+
+.facet-lg{clip-path:polygon(var(--facet) 0,100% 0,100% calc(100% - var(--facet)),calc(100% - var(--facet)) 100%,0 100%,0 var(--facet));}
+.facet-sm{clip-path:polygon(var(--facet-sm) 0,100% 0,100% calc(100% - var(--facet-sm)),calc(100% - var(--facet-sm)) 100%,0 100%,0 var(--facet-sm));}
+.facet-tl{clip-path:polygon(var(--facet-sm) 0,100% 0,100% 100%,0 100%,0 var(--facet-sm));}
+
+#app{min-height:100vh;background:var(--bg)}
+.container{max-width:1180px;margin:0 auto;padding:0 28px}
+@media (max-width:640px){.container{padding:0 16px}}
+
+/* ============================= TOP NAV ============================= */
+.topnav{
+  position:sticky;top:0;z-index:40;
+  background:color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.topnav-inner{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:16px}
+@media (max-width:640px){.topnav-inner{padding:12px 16px;gap:10px}}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
+.brand-mark{width:32px;height:32px;flex-shrink:0}
+.brand-text{display:flex;flex-direction:column;line-height:1.1}
+.brand-text b{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text)}
+.brand-text span{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+.navtabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:999px;margin-left:auto}
+.navtabs button{
+  border:none;background:transparent;padding:8px 16px;border-radius:999px;
+  font-size:13.5px;font-weight:600;color:var(--text-muted);transition:background .15s,color .15s;
+  white-space:nowrap;
+}
+.navtabs button.active{background:var(--primary);color:#fff}
+.navtabs button:hover:not(.active){color:var(--text)}
+.langtoggle{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:999px;flex-shrink:0}
+.langtoggle button{border:none;background:transparent;padding:7px 12px;font-size:11.5px;font-weight:700;color:var(--text-muted);border-radius:999px;white-space:nowrap}
+.langtoggle button.active{background:var(--primary);color:#fff}
+@media (max-width:760px){
+  .topnav-inner{flex-wrap:wrap;row-gap:10px}
+  .navtabs{margin-left:0;overflow-x:auto;width:100%;order:3;flex-basis:100%}
+  .navtabs button{padding:7px 12px;font-size:12.5px}
+  .langtoggle{margin-left:auto}
+}
+
+/* ============================= BUTTONS / TAGS ============================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;font-size:13.5px;font-weight:700;border:none;
+  background:var(--primary);color:#fff;transition:transform .12s,background .15s;
+}
+.btn.facet-sm:active{transform:translateY(1px)}
+.btn:hover{background:var(--primary-strong)}
+.btn-accent{background:var(--accent);color:#2A1C02}
+.btn-accent:hover{background:var(--accent-strong)}
+.btn-ghost{background:var(--surface-2);color:var(--text)}
+.btn-ghost:hover{background:var(--surface-3)}
+.btn-outline{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.4px var(--border)}
+.btn-outline:hover{box-shadow:inset 0 0 0 1.4px var(--primary)}
+.btn-sm{padding:7px 13px;font-size:12.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;font-size:11.5px;font-weight:700;letter-spacing:.02em}
+.pill-good{background:var(--good-soft);color:var(--good)}
+.pill-warn{background:var(--warn-soft);color:var(--warn)}
+.pill-critical{background:var(--critical-soft);color:var(--critical)}
+.pill-info{background:var(--info-soft);color:var(--info)}
+.pill-neutral{background:var(--surface-3);color:var(--text-muted)}
+.pill-accent{background:var(--accent-soft);color:var(--accent-strong)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-good{background:var(--good)}.dot-warn{background:var(--warn)}.dot-critical{background:var(--critical)}.dot-info{background:var(--info)}
+
+/* ============================= CARD ============================= */
+.card{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);filter:drop-shadow(0 1px 2px hsl(var(--shadow-color)/.06));padding:20px}
+.card-pad-lg{padding:26px}
+
+/* ============================= LANDING ============================= */
+.hero{
+  background:linear-gradient(155deg,#0F2E23 0%,#1F4B3D 62%,#2E6650 100%);
+  color:#fff;position:relative;overflow:hidden;
+}
+.hero-inner{max-width:1180px;margin:0 auto;padding:76px 28px 64px;position:relative;z-index:2}
+@media (max-width:640px){.hero-inner{padding:52px 16px 44px}}
+.hero-eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C9E6D4;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:"";width:22px;height:1px;background:#C9E6D4;opacity:.6}
+.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.1;color:#fff;font-weight:600;max-width:16ch}
+.hero-sub{margin-top:20px;font-size:17px;line-height:1.55;color:#DCEDE2;max-width:52ch}
+.hero-cn{font-family:var(--font-display);font-size:15px;color:#B9DBC4;margin-top:8px;font-style:italic}
+.hero-ctas{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.16);margin-top:56px;max-width:640px}
+.hero-stat{background:#0F2E23;padding:18px 20px}
+.hero-stat b{display:block;font-family:var(--font-mono);font-size:26px;font-weight:600;color:#fff}
+.hero-stat span{font-size:11.5px;color:#BFDECB;text-transform:uppercase;letter-spacing:.05em}
+.hero-durian{position:absolute;right:-60px;top:50%;transform:translateY(-50%);width:420px;height:420px;opacity:.16;z-index:1}
+@media (max-width:900px){.hero-durian{display:none}}
+
+.section{padding:64px 0}
+.section-head{max-width:640px;margin-bottom:36px}
+.section-eyebrow{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-strong);font-weight:800;margin-bottom:10px}
+.section-head h2{font-size:clamp(24px,3vw,32px)}
+.section-head p{color:var(--text-muted);margin-top:12px;font-size:15px;line-height:1.6}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+@media (max-width:760px){.compare{grid-template-columns:1fr}}
+.compare-col{background:var(--surface);padding:26px}
+.compare-col h3{font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.compare-col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.compare-col li{font-size:14px;color:var(--text-muted);line-height:1.5;padding-left:18px;position:relative}
+.compare-col.old li::before{content:"–";position:absolute;left:0;color:var(--critical);font-weight:700}
+.compare-col.new li::before{content:"+";position:absolute;left:0;color:var(--good);font-weight:700}
+
+.steps5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media (max-width:900px){.steps5{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.steps5{grid-template-columns:1fr}}
+.step-card{background:var(--surface);padding:20px 18px;position:relative}
+.step-num{font-family:var(--font-mono);font-size:11px;color:var(--accent-strong);font-weight:700;margin-bottom:10px;letter-spacing:.05em}
+.step-card h4{font-size:14.5px;margin-bottom:6px}
+.step-card p{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:820px){.roadmap{grid-template-columns:repeat(2,1fr)}}
+.road-card{background:var(--surface);padding:20px}
+.road-year{font-family:var(--font-mono);font-size:13px;color:var(--primary);font-weight:700;margin-bottom:6px}
+.road-card h4{font-size:15px;margin-bottom:8px}
+.road-card p{font-size:12.5px;color:var(--text-muted);line-height:1.5}
+
+.entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.entry-grid{grid-template-columns:1fr}}
+.entry-card{
+  background:var(--surface);padding:30px;cursor:pointer;transition:filter .15s,transform .15s;
+  display:flex;flex-direction:column;gap:14px;box-shadow:inset 0 0 0 1px var(--border);
+}
+.entry-card:hover{transform:translateY(-2px)}
+.entry-icon{width:44px;height:44px}
+.entry-card h3{font-size:20px}
+.entry-card p{color:var(--text-muted);font-size:13.5px;line-height:1.55}
+.entry-card .btn{align-self:flex-start;margin-top:6px}
+
+.pilot-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border)}
+@media (max-width:900px){.pilot-metrics{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.pilot-metrics{grid-template-columns:repeat(2,1fr)}}
+.pilot-metric{background:var(--surface);padding:16px 14px}
+.pilot-metric span{display:block;font-size:11px;color:var(--text-faint);line-height:1.4;margin-top:4px}
+.pilot-metric b{font-family:var(--font-mono);font-size:12.5px;color:var(--primary)}
+[data-lang="zh"] .pilot-metric b{font-family:var(--font-body);font-size:13.5px}
+
+.landing-footer{padding:30px 0 50px;text-align:center;color:var(--text-faint);font-size:12px}
+
+/* ============================= APP SHELLS ============================= */
+.appshell{display:flex;min-height:calc(100vh - 66px)}
+.appsidebar{
+  width:216px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
+  padding:22px 12px;position:sticky;top:66px;align-self:flex-start;height:calc(100vh - 66px);overflow-y:auto;
+}
+.side-persona{padding:10px 12px 18px;margin-bottom:10px;border-bottom:1px solid var(--border)}
+.side-persona label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);font-weight:700}
+.side-persona select{
+  width:100%;margin-top:8px;padding:9px 10px;background:var(--surface-2);border:none;
+  color:var(--text);font-size:13px;font-weight:600;
+}
+.sidebtn{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:none;background:transparent;
+  padding:10px 12px;font-size:13.5px;font-weight:600;color:var(--text-muted);margin-bottom:2px;
+}
+.sidebtn svg{width:17px;height:17px;flex-shrink:0;opacity:.8}
+.sidebtn.active{background:var(--primary-soft);color:var(--primary-strong)}
+.sidebtn.active svg{opacity:1}
+.sidebtn:hover:not(.active){background:var(--surface-2);color:var(--text)}
+.sidefoot{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+.appmain{flex:1;min-width:0;padding:28px 32px 70px}
+@media (max-width:900px){
+  .appshell{flex-direction:column}
+  .appsidebar{width:100%;position:static;height:auto;display:flex;overflow-x:auto;padding:12px;gap:4px;align-items:center}
+  .side-persona{border-bottom:none;padding:0 8px 0 0;margin-bottom:0;flex-shrink:0;min-width:150px}
+  .sidebtn{white-space:nowrap;width:auto;margin-bottom:0}
+  .sidefoot{display:none}
+  .appmain{padding:20px 16px 60px}
+}
+.view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.view-head h2{font-size:23px}
+.view-head p{color:var(--text-muted);font-size:13.5px;margin-top:4px}
+
+/* ============================= GRIDS / STATS ============================= */
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:24px}
+.stat-tile{background:var(--surface);padding:16px 18px;box-shadow:inset 0 0 0 1px var(--border)}
+.stat-tile .lbl{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+[data-lang="zh"] .stat-tile .lbl{text-transform:none;letter-spacing:0}
+.stat-tile .val{font-family:var(--font-mono);font-size:25px;font-weight:600;margin-top:8px;color:var(--text)}
+.stat-tile .delta{font-size:11.5px;margin-top:6px;font-weight:600}
+.delta-up{color:var(--good)}.delta-down{color:var(--critical)}
+
+.twocol{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+@media (max-width:980px){.twocol{grid-template-columns:1fr}}
+
+.barrow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.barrow .barlbl{width:78px;flex-shrink:0;font-size:12px;color:var(--text-muted);font-family:var(--font-mono)}
+[data-lang="zh"] .barrow .barlbl{font-family:var(--font-body);width:88px}
+.bartrack{flex:1;height:9px;background:var(--surface-2);position:relative;overflow:hidden}
+.barfill{height:100%;background:var(--primary)}
+.barval{width:44px;text-align:right;font-family:var(--font-mono);font-size:12px;font-weight:600;flex-shrink:0}
+.stackbar{display:flex;height:26px;width:100%;overflow:hidden;background:var(--surface-2)}
+.stackseg{height:100%}
+.stacklegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+.stacklegend .li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}
+.stacklegend .sw{width:10px;height:10px}
+
+/* ============================= TREE CARDS ============================= */
+.treegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.treecard{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden;cursor:pointer;transition:filter .15s}
+.treecard:hover{box-shadow:inset 0 0 0 1.4px var(--primary)}
+.treecard-art{height:118px;display:flex;align-items:center;justify-content:center;position:relative}
+.treecard-art svg{width:74px;height:74px}
+.treecard-body{padding:13px 14px 15px}
+.treecard-id{font-family:var(--font-mono);font-size:12px;color:var(--text-faint);display:flex;justify-content:space-between;align-items:center}
+.treecard-body h4{font-size:14.5px;margin-top:5px}
+.treecard-meta{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+
+.tier-A{background:var(--accent-soft)}
+.tier-B{background:var(--primary-soft)}
+.tier-C{background:var(--secondary-soft)}
+
+/* ============================= TABLE ============================= */
+.tablewrap{overflow-x:auto;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+thead th{
+  text-align:left;padding:11px 14px;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--text-faint);border-bottom:1px solid var(--border);background:var(--surface-2);font-weight:700;white-space:nowrap;
+}
+[data-lang="zh"] thead th{text-transform:none;letter-spacing:0}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+td.wrap{white-space:normal}
+.rowbtn{border:none;background:var(--surface-2);padding:5px 11px;font-size:11.5px;font-weight:700;color:var(--text)}
+.rowbtn:hover{background:var(--surface-3)}
+
+/* ============================= STEPPER ============================= */
+.stepper{display:flex;gap:0;overflow-x:auto;padding-bottom:6px}
+.stepnode{display:flex;flex-direction:column;align-items:center;min-width:96px;position:relative;flex-shrink:0}
+.stepnode:not(:last-child)::after{content:"";position:absolute;top:15px;left:56%;width:100%;height:2px;background:var(--border);z-index:0}
+.stepnode.done:not(:last-child)::after{background:var(--primary)}
+.stepcircle{width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-faint);position:relative;z-index:1;box-shadow:0 0 0 4px var(--surface)}
+.stepnode.done .stepcircle{background:var(--primary);color:#fff}
+.stepnode.current .stepcircle{background:var(--accent);color:#2A1C02}
+.stepnode span{font-size:11px;margin-top:8px;color:var(--text-muted);text-align:center;font-weight:600}
+.stepnode.current span{color:var(--text);font-weight:700}
+
+/* ============================= BLINDBOX ============================= */
+.boxgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media (max-width:700px){.boxgrid{grid-template-columns:repeat(2,1fr)}}
+.boxcard{
+  aspect-ratio:3/4;background:linear-gradient(150deg,var(--primary),var(--primary-strong));
+  display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;
+  transition:transform .35s cubic-bezier(.2,.9,.3,1.2);perspective:800px;
+}
+.boxcard svg{width:38px;height:38px;opacity:.85}
+.boxcard.revealed{cursor:default;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)}
+.boxcard .front,.boxcard .back{transition:opacity .3s}
+.boxcard.revealed .front{display:none}
+.boxcard .back{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%;padding:10px;text-align:center}
+.boxcard.revealed .back{display:flex}
+.boxcard .back b{font-family:var(--font-mono);font-size:12px;margin-top:8px}
+[data-lang="zh"] .boxcard .back b{font-family:var(--font-body)}
+.boxcard .back span{font-size:10.5px;color:var(--text-muted);margin-top:3px}
+
+/* ============================= DIAGNOSIS ============================= */
+.diag-tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--surface-2);padding:4px;width:fit-content;flex-wrap:wrap}
+.diag-tabs button{border:none;background:transparent;padding:8px 15px;font-size:12.5px;font-weight:700;color:var(--text-muted)}
+.diag-tabs button.active{background:var(--surface);color:var(--primary)}
+.upload-zone{
+  background:var(--surface);box-shadow:inset 0 0 0 1.6px dashed var(--border);padding:34px 20px;
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.upload-zone svg{width:40px;height:40px;color:var(--text-faint)}
+.upload-zone p{color:var(--text-muted);font-size:13px}
+.preview-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.preview-thumb{width:150px;height:150px;object-fit:cover;box-shadow:inset 0 0 0 1px var(--border);flex-shrink:0}
+.result-card{flex:1;min-width:260px;background:var(--surface-2);padding:18px}
+.confidence-bar{height:7px;background:var(--surface-3);margin-top:6px;overflow:hidden}
+.confidence-fill{height:100%;background:var(--accent)}
+.symptom-chip{
+  border:none;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--border);padding:9px 13px;
+  font-size:12.5px;font-weight:600;color:var(--text-muted);text-align:left;
+}
+.symptom-chip.selected{background:var(--primary-soft);box-shadow:inset 0 0 0 1.5px var(--primary);color:var(--primary-strong)}
+.symptom-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px}
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.lib-card{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);padding:17px}
+.lib-card h4{font-size:14.5px;margin-bottom:2px}
+.lib-card .sci{font-size:11.5px;font-style:italic;color:var(--text-faint);margin-bottom:10px}
+.lib-card ul{margin:8px 0 0;padding-left:16px;font-size:12px;color:var(--text-muted);line-height:1.6}
+
+/* ============================= KANBAN ============================= */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:820px){.kanban{grid-template-columns:1fr}}
+.kancol{background:var(--surface-2);padding:14px}
+.kancol h4{font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);margin-bottom:12px;display:flex;justify-content:space-between}
+[data-lang="zh"] .kancol h4{text-transform:none;letter-spacing:0}
+.kancard{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);padding:12px 13px;margin-bottom:9px}
+.kancard b{font-size:13px;display:block}
+.kancard span{font-size:11.5px;color:var(--text-muted)}
+
+/* ============================= MODAL ============================= */
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,18,14,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--surface);max-width:560px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:inset 0 0 0 1px var(--border)}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 24px 0}
+.modal-close{border:none;background:var(--surface-2);width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-muted)}
+.modal-body{padding:16px 24px 26px}
+
+/* ============================= ALLOCATOR ============================= */
+.alloc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.alloc-row label{width:96px;flex-shrink:0;font-size:13px;font-weight:700}
+.alloc-row input[type=range]{flex:1;accent-color:var(--primary)}
+.alloc-row .kgval{width:56px;text-align:right;font-family:var(--font-mono);font-weight:600;font-size:13px}
+
+/* misc */
+.flex{display:flex}.items-center{align-items:center}.gap8{gap:8px}.gap12{gap:12px}
+.mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mb16{margin-bottom:16px}
+.muted{color:var(--text-muted)}
+.small{font-size:12px}
+.empty{padding:40px 20px;text-align:center;color:var(--text-faint);font-size:13px}
+.badge-severity-critical{background:var(--critical-soft);color:var(--critical)}
+.badge-severity-moderate{background:var(--warn-soft);color:var(--warn)}
+.badge-severity-low{background:var(--good-soft);color:var(--good)}
+.badge-severity-none{background:var(--surface-3);color:var(--text-muted)}
+</style>
+
+
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ORCHARD OS -- bilingual prototype (EN / 简体中文, default zh) for BeiBei Farm 贝贝农场 */
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rng = mulberry32(88881);
+function pick(arr){return arr[Math.floor(rng()*arr.length)]}
+function randInt(a,b){return a+Math.floor(rng()*(b-a+1))}
+
+/* ---------------- i18n ---------------- */
+const STATE = { lang:'zh' };
+function L(pair){ return pair ? (pair[STATE.lang] || pair.en) : '' }
+const STR = {
+  navOverview:{en:'Overview',zh:'总览'}, navMember:{en:'Member Portal',zh:'会员前台'}, navBackoffice:{en:'Orchard Backoffice',zh:'果园后台'},
+  heroEyebrow:{en:'Working Business Plan · Pilot → Membership → Platform',zh:'商业计划书 · 试点 → 会员制 → 平台化'},
+  heroTitle:{en:'From 180 durian trees to a membership orchard you can replicate.',zh:'从180棵榴莲树开始，打造可复制的会员制果园系统。'},
+  heroSub:{en:"Orchard OS turns BeiBei Farm's tree-adoption programme into a recurring-revenue membership system — and a piece of software other orchard owners can run too. This is a working prototype of the two products underneath it: the Member Portal and the Orchard Backoffice.",zh:'Orchard OS 把贝贝农场的榴莲树认养计划，升级为具备持续收入的会员制系统——也是一套其他园主也能使用的软件。这是其中两个产品的可运行原型：会员前台与果园后台。'},
+  heroTagAlt:{en:'从树木认养走向可复制的会员制果园平台。',zh:'From tree adoption to a replicable, membership-run orchard platform.'},
+  heroCtaMember:{en:'Explore Member Portal',zh:'进入会员前台'}, heroCtaBackoffice:{en:'Explore Orchard Backoffice',zh:'进入果园后台'},
+  heroStat1:{en:'Trees at full farm',zh:'满园树木总数'}, heroStat2:{en:'Trees per household',zh:'每户认养树数'}, heroStat3:{en:'Pilot households live',zh:'试点家庭数'},
+  whyEyebrow:{en:'Why change',zh:'为什么要改变'},
+  whyTitle:{en:'Harvest-season income is a passive, volatile way to run an orchard.',zh:'收成季收入被动又波动，不是经营果园的好方式。'},
+  whyDesc:{en:"Traditional durian sales concentrate all of a tree's value into a few weeks a year, at a price the farm doesn't set. The membership model moves part of that value earlier — and turns buyers into a relationship.",zh:'传统榴莲销售把一棵树全年的价值，集中在收成的几周内实现，价格也由市场决定。会员模式把部分价值提前锁定，并把买家变成长期关系。'},
+  compareOldTitle:{en:'Traditional orchard',zh:'传统果园模式'}, compareNewTitle:{en:'Orchard OS membership',zh:'Orchard OS 会员模式'},
+  old1:{en:'Revenue only arrives after fruit matures',zh:'果实成熟后才产生收入'},
+  old2:{en:'Wholesale price swings with market supply',zh:'批发价格受市场供需影响大'},
+  old3:{en:'Tree age, weather and flowering are unpredictable',zh:'树龄、天气、开花与产量不确定'},
+  old4:{en:'No direct relationship with the people who eat the fruit',zh:'农场缺少消费者关系与品牌资产'},
+  new1:{en:'Adoption fees fund the tree before it even flowers',zh:'树在开花前已产生认养收入'},
+  new2:{en:'Members upgrade from "buying durian" to "owning the experience"',zh:'消费者从"买榴莲"升级为"拥有果园体验"'},
+  new3:{en:'Fruit can be eaten, gifted, self-sold, or consigned to the farm',zh:'果实可以自吃、送礼、推广或委托农场处理'},
+  new4:{en:'The farm builds member data, brand equity and repeat revenue',zh:'农场逐步拥有会员数据、品牌与重复收入'},
+  coreEyebrow:{en:'Core product',zh:'核心产品'}, coreTitle:{en:'My Five Trees',zh:'我的五棵树'},
+  coreDesc:{en:'Not land or tree ownership — a 24-month adoption of 5 real trees, with rights to their actual harvest.',zh:'不是土地或树木产权，而是两年的果树认养与实际收成果实权益。'},
+  step1t:{en:'Adopt',zh:'认养'}, step1d:{en:'Pay the monthly plan, 5 trees assigned per household, 24-month term.',zh:'缴纳月费，每户分配5棵树，认养期24个月。'},
+  step2t:{en:'Blind-box reveal',zh:'盲盒开树'}, step2d:{en:'Fair tiering (A/B/C) happens in the backoffice first; the member reveal is random.',zh:'后台先完成公平分层（A/B/C），前台随机揭晓 Tree ID。'},
+  step3t:{en:'Grow together',zh:'陪伴成长'}, step3d:{en:'Monthly tree photos, bloom alerts, and expected fruit counts land on the dashboard.',zh:'每月树况照片、花况提醒与预计果数同步至仪表板。'},
+  step4t:{en:'Harvest choice',zh:'收成选择'}, step4d:{en:'Eat it, gift it with the Tree ID, sell it themselves, or consign it to the farm.',zh:'自己吃、以 Tree ID 送礼、自己推广销售，或委托农场代售。'},
+  step5t:{en:'Renew',zh:'续约'}, step5d:{en:'Keep the same trees, or swap and open a new blind box.',zh:'原树续养，或换树重新开盲盒。'},
+  phaseEyebrow:{en:'Phase 1 · Live now in this prototype',zh:'第一阶段 · 本原型现已呈现'},
+  phaseTitle:{en:'50 trees, 10 households — proving real payment and fulfilment first',zh:'50棵树、10户家庭——先验证真实付款与完整履约'},
+  phaseDesc:{en:'RM199/month × 24 months, run on WhatsApp + a simple web app + a spreadsheet. No heavy build until the model is proven. These are the 6 metrics the backoffice tracks every season:',zh:'RM199/月 × 24个月，用 WhatsApp + 简单网页 + Sheet 即可运作，模式验证前不做重型开发。以下是后台每季追踪的6项核心指标：'},
+  m1:{en:'kg / flowering %',zh:'产量(kg) / 开花率'}, m1s:{en:'Actual yield per group of 5',zh:'每5棵实际产量与开花率'},
+  m2:{en:'Eat / gift / sell / consign',zh:'自吃 / 送礼 / 自售 / 代售'}, m2s:{en:'Member consumption split',zh:'会员实际消费结构'},
+  m3:{en:'Cost per member',zh:'每户服务成本'}, m3s:{en:'Real fulfilment cost',zh:'每会员真实履约成本'},
+  m4:{en:'Renewal / referral',zh:'续约 / 推荐率'}, m4s:{en:'Retention & virality',zh:'续约意愿 / Referral Rate'},
+  m5:{en:'Complaint log',zh:'投诉记录'}, m5s:{en:'Disputes by type',zh:'投诉与争议类型'},
+  m6:{en:'Profit / group',zh:'每组利润贡献'}, m6s:{en:'True farm contribution',zh:'农场每组真实贡献利润'},
+  tryEyebrow:{en:'Try the prototype',zh:'体验原型'}, tryTitle:{en:'Two products, one system',zh:'两个产品，一套系统'},
+  memberCardTitle:{en:'Member Portal',zh:'会员前台'},
+  memberCardDesc:{en:'The household side: blind-box reveal, the Tree Dashboard for 5 trees, the growth journey, harvest allocation, referrals and billing.',zh:'家庭视角：盲盒开树、五棵树仪表板、成长旅程、收成分配、推荐与账单。'},
+  memberCardBtn:{en:'Open Member Portal →',zh:'打开会员前台 →'},
+  backCardTitle:{en:'Orchard Backoffice',zh:'果园后台'},
+  backCardDesc:{en:'The farm side: tree registry, flowering/fruiting tracking, grade & harvest log, the disease diagnosis assistant, and fulfilment.',zh:'农场视角：果树登记、开花结果追踪、分级采收记录、病害诊断助手与履约中心。'},
+  backCardBtn:{en:'Open Orchard Backoffice →',zh:'打开果园后台 →'},
+  roadEyebrow:{en:'Roadmap',zh:'路线图'}, roadTitle:{en:'Prove it, then scale it, then platform it',zh:'先证明，再扩大，再平台化'},
+  road1y:{en:'2026 · Pilot',zh:'2026 · 试点'}, road1t:{en:'10 households / 50 trees',zh:'10户家庭 / 50棵树'}, road1d:{en:'Light system, run one full durian season end to end.',zh:'轻量系统，完整跑完一个榴莲季。'},
+  road2y:{en:'2027 · Full Farm',zh:'2027 · 满园运营'}, road2t:{en:'180 trees',zh:'180棵树'}, road2d:{en:'Optimise pricing & terms, build the waiting list.',zh:'优化定价与条款，建立等待名单。'},
+  road3y:{en:'2028 · Partner Farms',zh:'2028 · 伙伴果园'}, road3t:{en:'1–3 orchards onboarded',zh:'接入1–3个果园'}, road3d:{en:'Managed model, standardised SOPs.',zh:'Managed Model，标准化SOP。'},
+  road4y:{en:'2029+ · Platform',zh:'2029+ · 平台化'}, road4t:{en:'Orchard OS',zh:'Orchard OS'}, road4d:{en:'SaaS + marketplace, replicated across orchards.',zh:'SaaS + Marketplace，跨果园复制。'},
+  footer:{en:'BeiBei Farm · Concept Business Plan · Confidential / Working Draft · Prototype for investor review',zh:'贝贝农场 · Concept Business Plan · Confidential / Working Draft · 投资人评审原型'},
+  viewingAs:{en:'Viewing as',zh:'当前查看'},
+  tabDashboard:{en:'My Trees',zh:'我的树'}, tabJourney:{en:'Growth Journey',zh:'成长旅程'}, tabHarvest:{en:'Harvest & Use',zh:'收成与使用'}, tabReferral:{en:'Referral & Rewards',zh:'推荐与奖励'}, tabBilling:{en:'Membership & Billing',zh:'会员与账单'},
+  householdGroup:{en:'Household group',zh:'所属组别'}, memberSince:{en:'Member since month',zh:'加入第 {n} 个月'},
+  openBoxTitle:{en:'Open your box, {name}',zh:'开启你的盲盒，{name}'},
+  openBoxDesc:{en:'Every group is built as 1 A-tier + 3 B-tier + 1 C-tier tree before Tree IDs are randomly assigned — the surprise is real, the fairness is structural. Tap each card.',zh:'每组树都由1棵A级 + 3棵B级 + 1棵C级组成，再随机分配 Tree ID——惊喜是真的，公平也是结构性的。点击每张卡片揭晓。'},
+  continueDash:{en:'Continue to Tree Dashboard →',zh:'进入树木仪表板 →'},
+  myFiveTrees:{en:'My Five Trees',zh:'我的五棵树'}, qrActive:{en:'Member QR active',zh:'会员二维码已启用'},
+  journeyTitle:{en:'Growth Journey',zh:'成长旅程'}, journeyDesc:{en:"A durian only fruits once a year — the experience shouldn't.",zh:'榴莲一年只结一次果，但会员体验必须全年持续。'},
+  jStep1:{en:'Join',zh:'加入'}, jStep2:{en:'Unbox',zh:'开箱'}, jStep3:{en:'Grow',zh:'成长'}, jStep4:{en:'Flower',zh:'开花'}, jStep5:{en:'Fruit',zh:'结果'}, jStep6:{en:'Harvest',zh:'采收'}, jStep7:{en:'Use',zh:'使用'}, jStep8:{en:'Renew',zh:'续约'},
+  recentUpdates:{en:'Recent tree updates',zh:'最新树况更新'}, updatedOn:{en:'Updated',zh:'更新于'},
+  harvestTitle:{en:'Harvest & Use',zh:'收成与使用'},
+  harvestEmptyDesc:{en:'None of your trees have reached harvest yet this season.',zh:'本季您的树木尚未进入采收阶段。'},
+  harvestEmptyCard:{en:'Your Tree Dashboard will unlock harvest allocation once a tree reaches Harvest-Ready. Check back after the next flowering update.',zh:'当树木进入"可采收"阶段后，收成分配功能将自动开启。请在下次开花更新后再查看。'},
+  harvestReadyDesc:{en:'{id} is ready — decide how this harvest is used. One fruit, four ways.',zh:'{id} 已可采收——决定这次收成如何使用。一份果实，四种方式。'},
+  allocTitle:{en:'Allocate ~{kg} kg from {id}',zh:'分配来自 {id} 的约 {kg} 公斤果实'},
+  allocDesc:{en:'Drag to split the harvest. Farm applies one grading & packaging standard across every option.',zh:'拖动以分配收成比例，农场对所有选项采用统一的分级与包装标准。'},
+  allocEat:{en:'Eat',zh:'自己吃'}, allocGift:{en:'Gift',zh:'送亲友'}, allocSell:{en:'Sell',zh:'自己推广'}, allocConsign:{en:'Consign',zh:'委托处理'},
+  totalAllocated:{en:'Total allocated:',zh:'已分配总计：'},
+  genGiftBtn:{en:'Generate Gift Story Card',zh:'生成礼赠故事卡'},
+  fulfilRulesTitle:{en:'Fulfilment rules',zh:'履约规则'},
+  fr1:{en:'Eat / self pickup — reserve a Harvest Day slot or request packed delivery',zh:'自吃 / 自取——预约 Harvest Day 或安排包装配送'},
+  fr2:{en:'Gift — farm packs a gift box printed with the Tree ID and a short story card',zh:'送礼——农场以礼盒 + Tree ID 打造"我的果园礼物"'},
+  fr3:{en:'Sell — you find the buyer, farm handles packing & dispatch',zh:'自售——会员找客户，农场负责包装出货'},
+  fr4:{en:"Consign — farm sells on your behalf at the season's Grade rate, settled monthly",zh:'代售——按当季等级与规则，由农场代售 / 收购'},
+  giftCardLabel:{en:'GIFT STORY CARD',zh:'礼赠故事卡'},
+  giftCardTitle:{en:'A durian from my own tree, {id}',zh:'来自我自己的树，{id}'},
+  giftCardDesc:{en:'Grown at BeiBei Farm and cared for by {name} for {n} months. Scan the Tree ID to see its story.',zh:'由{name}在贝贝农场悉心照料{n}个月成长而成。扫描 Tree ID 查看它的故事。'},
+  referralTitle:{en:'Referral & Rewards',zh:'推荐与奖励'},
+  referralDesc:{en:'Every tree owner is a distribution node — no MLM tiers, just farm credit.',zh:'每一位树主都是品牌传播节点——没有多层佣金，只有农场积分。'},
+  yourCode:{en:'Your referral code',zh:'您的推荐码'},
+  codeDesc:{en:'Share your tree photos and gift boxes — when a friend joins with this code, you both get farm credit.',zh:'分享您的树况照片与礼盒——好友使用此推荐码加入后，双方都能获得农场积分。'},
+  creditsEarned:{en:'Credits earned',zh:'已获积分'}, referralsLabel:{en:'Referrals',zh:'成功推荐'},
+  flywheelTitle:{en:'How the flywheel works',zh:'增长飞轮如何运作'},
+  fw1:{en:'Share your tree status or a gift box',zh:'分享树况或礼盒'}, fw2:{en:'A friend experiences a real fruit + Tree ID',zh:'朋友体验真实果实与 Tree ID'},
+  fw3:{en:'They join as a new tree member',zh:'新会员加入'}, fw4:{en:'You both receive one-time farm/delivery credit',zh:'双方获得一次性农场/配送积分'},
+  billingTitle:{en:'Membership & Billing',zh:'会员与账单'}, billingDesc:{en:'RM199/month · 24-month adoption term',zh:'RM199/月 · 24个月认养期限'},
+  planProgress:{en:'Plan progress',zh:'缴费进度'}, monthCol:{en:'Month',zh:'月份'}, amountCol:{en:'Amount',zh:'金额'}, statusCol:{en:'Status',zh:'状态'}, paidStatus:{en:'Paid',zh:'已缴费'},
+  monthOf24:{en:'Month {n}/24',zh:'第 {n}/24 个月'},
+  atRenewal:{en:'At renewal',zh:'续约时'}, renewSame:{en:'Renew same 5 trees',zh:'续约原有5棵树'}, swapTrees:{en:'Swap trees — open a new blind box',zh:'更换树木——开启新盲盒'},
+  renewalNote:{en:'Renewal pricing may include a base Harvest Entitlement plus shared upside on surplus yield, so long-term terms stay sustainable as trees mature.',zh:'正式续约条款可能包含基础 Harvest Entitlement 加上超额产量共享，确保树木成熟后长期条款仍可持续。'},
+  signedInAs:{en:'Signed in as',zh:'登录身份'}, farmOpsAdmin:{en:'Farm Ops · Admin',zh:'农场运营 · 管理员'},
+  treesPlanned:{en:'180 trees planned',zh:'规划总数180棵'}, liveInPilot:{en:'50 live in Pilot · 10 households',zh:'试点已上线50棵 · 10户家庭'},
+  bOverview:{en:'Overview',zh:'总览'}, bRegistry:{en:'Tree Registry',zh:'果树登记'}, bFlowering:{en:'Flowering & Fruiting',zh:'开花结果追踪'}, bHarvestLog:{en:'Grade & Harvest Log',zh:'分级采收记录'}, bDiagnosis:{en:'Disease Diagnosis',zh:'病害诊断'}, bFulfillment:{en:'Fulfilment Center',zh:'履约中心'}, bMembers:{en:'Members',zh:'会员管理'},
+  orchardOverview:{en:'Orchard Overview',zh:'果园总览'}, overviewDesc:{en:'Phase 1 pilot · live snapshot across 10 groups / 50 trees',zh:'第一阶段试点 · 10组 / 50棵树实时快照'},
+  fullFarmBadge:{en:'180-tree plan · Full Farm 2027',zh:'规划180棵 · 2027年满园'},
+  statHealthy:{en:'Trees healthy',zh:'健康树木'}, statWatch:{en:'Watch list',zh:'观察清单'}, statIssue:{en:'Active issues',zh:'现有问题'}, statRenewal:{en:'Renewal intent',zh:'续约意愿'}, statReferral:{en:'Referral rate',zh:'推荐率'}, statCost:{en:'Fulfilment cost',zh:'履约成本'},
+  ofPilot:{en:' of pilot',zh:'占试点比例'}, monitorWeekly:{en:'Monitor weekly',zh:'每周监测'}, needsTreatment:{en:'Needs treatment',zh:'需要处理'}, vsTarget:{en:'▲ vs 74% target',zh:'▲ 高于74%目标'}, referralRatio:{en:'2.4 referrals / 10 members',zh:'每10户2.4次推荐'}, perMemberMonth:{en:'per member / month',zh:'每户每月'},
+  yieldByGroup:{en:'Yield by group (kg, this season)',zh:'各组本季产量（公斤）'}, consumptionSplit:{en:'Member consumption split',zh:'会员消费结构'},
+  legendEat:{en:'Eat',zh:'自吃'}, legendGift:{en:'Gift',zh:'送礼'}, legendSell:{en:'Sell',zh:'自售'}, legendConsign:{en:'Consign',zh:'代售'},
+  complaintsTitle:{en:'Complaints this season',zh:'本季投诉记录'},
+  complaintsText:{en:'Grading dispute · 3　Delivery delay · 2　Tree health concern · 1',zh:'分级争议 · 3　配送延迟 · 2　树况问题 · 1'},
+  healthMapTitle:{en:'Orchard health map',zh:'果园健康地图'},
+  healthMapDesc:{en:'Every tree currently under adoption, colour-coded by status. Click a tree to open its record.',zh:'显示所有认养中的树木，依状态标色。点击任一树木查看详细记录。'},
+  viewFullRegistry:{en:'View full registry (50 trees) →',zh:'查看完整登记表（50棵树）→'},
+  registryTitle:{en:'Tree Registry',zh:'果树登记'}, registryDesc:{en:'All {n} pilot trees · Tree ID, tier, variety and current condition',zh:'全部 {n} 棵试点树木 · Tree ID、层级、品种与当前状况'},
+  colTreeId:{en:'Tree ID',zh:'Tree ID'}, colGroup:{en:'Group',zh:'组别'}, colTier:{en:'Tier',zh:'层级'}, colVariety:{en:'Variety',zh:'品种'}, colAge:{en:'Age',zh:'树龄'}, colStage:{en:'Stage',zh:'阶段'}, colHealth:{en:'Health',zh:'健康状况'}, colUpdated:{en:'Updated',zh:'更新日期'}, colView:{en:'View',zh:'查看'},
+  floweringTitle:{en:'Flowering & Fruiting',zh:'开花结果追踪'}, floweringDesc:{en:'Bloom rate and expected yield window, per group of 5',zh:'各组5棵树的开花率与预计收成窗口'},
+  bloomLabel:{en:'Bloom',zh:'开花率'}, noBloom:{en:'No active bloom this cycle',zh:'本周期尚无开花情况'},
+  fruitingOf:{en:'{n} of 5 trees fruiting · stages: {s}',zh:'5棵中有{n}棵正在结果 · 阶段：{s}'},
+  harvestLogTitle:{en:'Grade & Harvest Log',zh:'分级与采收记录'}, harvestLogDesc:{en:'Every recorded harvest event this season',zh:'本季所有已记录的采收事件'},
+  logNewHarvest:{en:'+ Log new harvest',zh:'+ 记录新采收'},
+  colDate:{en:'Date',zh:'日期'}, colWeight:{en:'Weight',zh:'重量'}, colGrade:{en:'Grade',zh:'等级'}, colAllocation:{en:'Allocation',zh:'分配'}, colRecordedBy:{en:'Recorded by',zh:'记录人'}, farmOps:{en:'Farm Ops',zh:'农场运营'},
+  diagTitle:{en:'Disease & Problem Diagnosis',zh:'病害与问题诊断'}, diagDesc:{en:'Photo-based visual match, a guided symptom checklist, or browse the full field guide.',zh:'支持照片视觉比对、引导式症状勾选，或浏览完整病害图鉴。'},
+  diagPhoto:{en:'Photo analysis',zh:'照片分析'}, diagChecklist:{en:'Guided symptom check',zh:'引导式症状检查'}, diagLibrary:{en:'Field guide',zh:'病害图鉴'}, diagLog:{en:'Diagnosis log',zh:'诊断记录'},
+  uploadTitle:{en:'Click to upload a tree photo',zh:'点击上传树木照片'}, uploadSub:{en:'Leaf, trunk, branch or fruit — JPG or PNG',zh:'叶片、树干、枝条或果实 — 支持 JPG 或 PNG'},
+  analysing:{en:'Analysing image…',zh:'正在分析图片…'},
+  checklistDesc:{en:'Select every symptom you can see on the tree. The more you select, the sharper the match.',zh:'请勾选您在树上观察到的所有症状。勾选越多，比对越精准。'},
+  getDiagnosisBtn:{en:'Get diagnosis',zh:'获取诊断结果'}, selectAtLeastOne:{en:'Select at least one symptom.',zh:'请至少选择一项症状。'},
+  matchConfidence:{en:'Match confidence',zh:'匹配可信度'}, likelySymptoms:{en:'Likely symptoms',zh:'可能症状'}, recommendedTreatment:{en:'Recommended treatment',zh:'建议治疗方案'},
+  secondPossibility:{en:'Second possibility:',zh:'次要可能性：'}, logToTreeBtn:{en:'Log to tree',zh:'记录至树木档案'}, loggedBtn:{en:'Logged ✓',zh:'已记录 ✓'},
+  emptyDiagLog:{en:'No diagnoses logged yet this session. Run a photo analysis or guided check, then log it to a tree.',zh:'本次会话尚未记录任何诊断。请先进行照片分析或引导式检查，再记录至具体树木。'},
+  colTree:{en:'Tree',zh:'树木'}, colDiagnosis:{en:'Diagnosis',zh:'诊断结果'}, colMethod:{en:'Method',zh:'方式'}, colConfidence:{en:'Confidence',zh:'可信度'},
+  methodPhoto:{en:'Photo analysis',zh:'照片分析'}, methodChecklist:{en:'Guided checklist',zh:'引导式检查'},
+  fulfilTitle:{en:'Fulfilment Center',zh:'履约中心'}, fulfilDesc:{en:'Every harvest allocation, tracked from packaging to delivery or consignment sale',zh:'追踪每一笔收成分配，从包装到配送或代售完成'},
+  colPackaging:{en:'Packaging',zh:'包装中'}, colDispatched:{en:'Dispatched',zh:'配送中'}, colDelivered:{en:'Delivered / Consigned-Sold',zh:'已送达 / 已代售'}, emptyCol:{en:'Empty',zh:'暂无'},
+  ftGift:{en:'Gift · Courier',zh:'礼赠 · 快递配送'}, ftPickup:{en:'Self pickup',zh:'自行取货'}, ftConsign:{en:'Consign · Sale',zh:'委托代售'},
+  membersTitle:{en:'Members',zh:'会员管理'}, membersDesc:{en:'All 10 pilot households',zh:'全部10户试点家庭'},
+  colHousehold:{en:'Household',zh:'家庭'}, colPlanMonth:{en:'Plan month',zh:'缴费月数'}, colReferrals:{en:'Referrals',zh:'推荐数'}, colCredits:{en:'Credits',zh:'积分'},
+  statusActive:{en:'Active',zh:'使用中'}, statusAwaiting:{en:'Awaiting unbox',zh:'待开盲盒'},
+  yrsOld:{en:'{n} yrs old',zh:'{n}年树龄'}, lastUpdated:{en:'Last updated {d}',zh:'最近更新 {d}'}, bloomRate:{en:'Bloom rate',zh:'开花率'},
+  expectedFruit:{en:'Expected fruit count this season: {n}',zh:'本季预计结果数：{n}'}, lastHarvest:{en:'Last harvest: {kg} kg · Grade {g}',zh:'最近采收：{kg} 公斤 · 等级 {g}'},
+  issueNote:{en:'Farm team has logged treatment steps — see Orchard Backoffice diagnosis log.',zh:'农场团队已记录治疗步骤——详见果园后台诊断记录。'},
+  sevCritical:{en:'critical',zh:'严重'}, sevModerate:{en:'moderate',zh:'中等'}, sevLow:{en:'low',zh:'轻微'}, sevNone:{en:'healthy',zh:'健康'},
+  tierWord:{en:'Tier',zh:''},
+};
+function tr(key){ const p = STR[key]; return p ? L(p) : key }
+function trf(key, vars){ let s = tr(key); Object.keys(vars||{}).forEach(k=>{ s = s.replace('{'+k+'}', vars[k]); }); return s }
+function tierLabel(tier){ return STATE.lang==='zh' ? (tier+'级') : ('Tier '+tier) }
+const GRADE_LABEL = { exportA:{en:'Export A',zh:'出口A级'}, premiumB:{en:'Premium B',zh:'优质B级'} };
+const STAGE_LABEL = {
+  Growing:{en:'Growing',zh:'生长中'}, Flowering:{en:'Flowering',zh:'开花期'}, Fruiting:{en:'Fruiting',zh:'结果期'},
+  'Harvest-Ready':{en:'Harvest-Ready',zh:'可采收'}, Harvested:{en:'Harvested',zh:'已采收'}, Dormant:{en:'Dormant',zh:'休眠期'},
+};
+const HEALTH_LABEL = { Healthy:{en:'Healthy',zh:'健康'}, Watch:{en:'Watch',zh:'观察中'}, Issue:{en:'Issue',zh:'有问题'} };
+
+/* ---------- SVG icon library (illustrative, not photographic) ---------- */
+const ICONS = {
+  leafMark:`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20C4 11 9 5 20 4C19 15 13 20 4 20Z" fill="currentColor" opacity=".9"/><path d="M5 19C9 15 12 12 18 6" stroke="var(--surface)" stroke-width="1.1" opacity=".5"/></svg>`,
+  sapling:`<svg viewBox="0 0 64 64"><circle cx="32" cy="46" r="3" fill="var(--secondary)"/><rect x="30" y="30" width="4" height="18" rx="2" fill="var(--secondary)"/><path d="M32 32C32 32 14 30 14 16C28 16 32 30 32 32Z" fill="var(--good)"/><path d="M32 32C32 32 50 30 50 16C36 16 32 30 32 32Z" fill="var(--primary)"/></svg>`,
+  flowering:`<svg viewBox="0 0 64 64"><rect x="30" y="34" width="4" height="16" rx="2" fill="var(--secondary)"/><path d="M32 34C32 34 12 34 12 18C26 18 32 30 32 34Z" fill="var(--primary)"/><path d="M32 34C32 34 52 34 52 18C38 18 32 30 32 34Z" fill="var(--good)"/><g fill="var(--accent)"><circle cx="20" cy="14" r="4"/><circle cx="32" cy="8" r="4"/><circle cx="44" cy="14" r="4"/></g></svg>`,
+  fruiting:`<svg viewBox="0 0 64 64"><rect x="30" y="10" width="4" height="14" rx="2" fill="var(--secondary)"/><path d="M32 24C32 24 14 26 14 12C26 10 32 20 32 24Z" fill="var(--primary)"/><path d="M32 24C32 24 50 26 50 12C38 10 32 20 32 24Z" fill="var(--good)"/><g><ellipse cx="24" cy="44" rx="10" ry="11" fill="var(--accent)"/><ellipse cx="42" cy="46" rx="9" ry="10" fill="var(--secondary)"/><g stroke="var(--surface)" stroke-width=".8" opacity=".55"><path d="M18 36l2 4M22 34l1 5M27 35l-1 5M31 37l-2 4"/><path d="M36 38l1 5M40 37l1 6M45 38l1 5"/></g></g></svg>`,
+  harvestReady:`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="17" ry="18" fill="var(--accent)"/><g stroke="var(--surface)" stroke-width="1" opacity=".6"><path d="M20 22l3 6M26 18l2 7M32 16l0 7M38 18l-2 7M44 22l-3 6M18 32l4 2M46 32l-4 2M20 44l4-3M44 44l-4-3"/></g><path d="M32 16V9" stroke="var(--secondary)" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+  harvested:`<svg viewBox="0 0 64 64"><path d="M14 46c0-4 8-6 18-6s18 2 18 6" stroke="var(--secondary)" stroke-width="2" fill="none"/><ellipse cx="24" cy="34" rx="9" ry="10" fill="var(--good)"/><ellipse cx="40" cy="36" rx="8" ry="9" fill="var(--accent)"/></svg>`,
+  dormant:`<svg viewBox="0 0 64 64"><rect x="30" y="26" width="4" height="22" rx="2" fill="var(--text-faint)"/><path d="M32 28C32 28 16 27 16 15C28 14 32 24 32 28Z" fill="var(--text-faint)" opacity=".55"/><path d="M32 28C32 28 48 27 48 15C36 14 32 24 32 28Z" fill="var(--text-faint)" opacity=".4"/></svg>`,
+  qr:`<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="none"/><g fill="currentColor"><rect x="2" y="2" width="10" height="10"/><rect x="28" y="2" width="10" height="10"/><rect x="2" y="28" width="10" height="10"/><rect x="16" y="2" width="4" height="4"/><rect x="22" y="2" width="4" height="4"/><rect x="16" y="16" width="4" height="4"/><rect x="22" y="10" width="4" height="4"/><rect x="16" y="22" width="4" height="4"/><rect x="22" y="22" width="4" height="4"/><rect x="16" y="28" width="4" height="4"/><rect x="22" y="34" width="4" height="4"/><rect x="28" y="16" width="4" height="4"/><rect x="34" y="22" width="4" height="4"/><rect x="28" y="28" width="4" height="4"/><rect x="34" y="34" width="4" height="4"/></g></svg>`,
+  upload:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 15V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  gift:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="9" width="18" height="11" rx="1"/><path d="M3 13h18M12 9v11"/><path d="M12 9C9 9 8 6.5 9.2 5.2 10.4 4 12 5 12 7c0-2 1.6-3 2.8-1.8C16 6.5 15 9 12 9Z"/></svg>`,
+  network:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.6" fill="currentColor"/><circle cx="5" cy="18" r="2.6" fill="currentColor" opacity=".55"/><circle cx="19" cy="18" r="2.6" fill="currentColor" opacity=".55"/><path d="M12 8v5M9.5 14 6.8 16M14.5 14l2.7 2" stroke="currentColor" stroke-width="1.3"/></svg>`,
+};
+function icon(name,cls){return `<span class="${cls||''}" style="display:inline-flex">${ICONS[name]}</span>`}
+
+/* ---------- disease / problem library (bilingual) ---------- */
+const DISEASES = [
+ {id:'healthy',name:{en:'No Issue Detected',zh:'未检测到问题'},sci:{en:'Healthy canopy',zh:'健康树冠'},cat:{en:'Baseline',zh:'基准状态'},severity:'none',
+  symptoms:{en:['Even, deep-green canopy colour','No lesions, spotting or unusual coating on leaves or bark','Normal leaf turgor, no wilting'],
+            zh:['树冠呈均匀的深绿色','叶片与树皮无病斑、斑点或异常附着物','叶片饱满，无萎蔫现象']},
+  treatment:{en:['Continue the standard watering and fertilising schedule','Recheck at the next monthly photo cycle'],
+             zh:['维持标准的浇水与施肥计划','下次月度拍照周期时再次检查']},
+  prevention:{en:'Routine monthly photo check is enough while the tree looks like this.',zh:'树况良好时，维持常规月度拍照检查即可。'},
+  sig:{h:[80,150],s:[.25,.6],l:[.25,.5],e:[.15,.35]}},
+ {id:'patch-canker',name:{en:'Patch Canker (Trunk)',zh:'树干溃疡病'},sci:{en:'Phytophthora palmivora',zh:'Phytophthora palmivora（棕榈疫霉）'},cat:{en:'Fungal · Trunk',zh:'真菌病害 · 树干'},severity:'critical',
+  symptoms:{en:['Watery, gum-like exudate oozing from trunk lesions','Dark, sunken bark patches that spread in wet weather','Bark cracking and peeling over the canker'],
+            zh:['树干病斑渗出水状、胶质分泌物','树皮出现暗色凹陷斑块，雨季扩散更快','溃疡部位树皮开裂剥落']},
+  treatment:{en:['Cut away and burn infected bark back to healthy tissue','Apply a copper-based or phosphonate fungicide paste to the wound','Improve drainage around the base; correct any waterlogging','Re-inspect every 2 weeks until the wound calluses over'],
+             zh:['切除病变树皮至健康组织并烧毁','在伤口涂抹含铜或膦酸盐类杀菌剂膏','改善根部排水，纠正积水问题','每2周复查一次，直至伤口愈合结痂']},
+  prevention:{en:'Plant on raised mounds at 10×10m spacing; keep the lowest branches pruned so the trunk stays dry.',zh:'以10×10米株距种植于高畦上；修剪最低枝条以保持树干干燥。'},
+  sig:{h:[18,38],s:[.15,.45],l:[.22,.42],e:[.3,.6]}},
+ {id:'root-rot',name:{en:'Phytophthora Root Rot',zh:'疫霉根腐病'},sci:{en:'Phytophthora palmivora / Pythium vexans',zh:'Phytophthora palmivora / Pythium vexans（腐霉菌）'},cat:{en:'Fungal · Root',zh:'真菌病害 · 根部'},severity:'critical',
+  symptoms:{en:['Sudden wilting and yellowing of the upper canopy','Roots turn brown, soft and rotten on inspection','Branch dieback concentrated on one side of the tree'],
+            zh:['树冠上部突然萎蔫并黄化','检查根部呈褐色、软烂','枝条枯死集中在树的一侧']},
+  treatment:{en:['Improve drainage immediately with raised mounds and cleared channels','Drench soil with metalaxyl or apply Trichoderma-amended compost','Remove severely affected roots; avoid over-watering during recovery','Flag the tree for weekly health checks for 6 weeks'],
+             zh:['立即改善排水，建高畦并疏通排水沟','用甲霜灵灌根，或施用木霉菌改良堆肥','清除严重受害根系；恢复期避免浇水过多','标记该树，连续6周每周健康检查']},
+  prevention:{en:'Avoid waterlogged planting sites; mulch to keep the root zone aerated.',zh:'避免在积水地种植；以覆盖物保持根区通气良好。'},
+  sig:{h:[40,72],s:[.2,.5],l:[.35,.6],e:[.14,.34]}},
+ {id:'leaf-blight',name:{en:'Phytophthora Leaf Blight',zh:'疫霉叶枯病'},sci:{en:'Phytophthora palmivora',zh:'Phytophthora palmivora（棕榈疫霉）'},cat:{en:'Fungal · Leaf',zh:'真菌病害 · 叶片'},severity:'moderate',
+  symptoms:{en:['Brown, water-soaked spots on the leaf surface','Spots enlarge and merge into irregular blotches','Premature leaf drop in humid weather'],
+            zh:['叶面出现褐色水浸状斑点','斑点扩大并连合成不规则斑块','潮湿天气下提前落叶']},
+  treatment:{en:['Remove and destroy affected leaves','Spray a copper-based fungicide every 10–14 days through the wet season','Prune for airflow to shorten leaf-wetness duration'],
+             zh:['清除并销毁受害叶片','雨季期间每10–14天喷施含铜杀菌剂一次','修剪增加通风，缩短叶面潮湿时间']},
+  prevention:{en:'Wider tree spacing and canopy thinning reduce the humidity build-up this pathogen needs.',zh:'加大株距并疏剪树冠，降低病原所需的高湿度环境。'},
+  sig:{h:[14,34],s:[.25,.55],l:[.22,.4],e:[.44,.72]}},
+ {id:'algal-leaf-spot',name:{en:'Algal Leaf Spot',zh:'藻斑病'},sci:{en:'Cephaleuros virescens',zh:'Cephaleuros virescens（头孢藻）'},cat:{en:'Algal',zh:'藻类病害'},severity:'low',
+  symptoms:{en:['Raised, velvety orange-to-rust spots on the upper leaf surface','Spots may spread onto young twigs and branches','Rarely fatal, but reduces leaf vigour over time'],
+            zh:['叶面上出现凸起、天鹅绒状的橙红至铁锈色斑点','斑点可能蔓延至幼枝与枝条','较少致命，但会逐渐降低叶片活力']},
+  treatment:{en:['Remove heavily infested shoots and leaves','Apply a copper-based fungicide or algaecide spray','Boost overall tree vigour with balanced fertilising'],
+             zh:['清除严重感染的枝梢与叶片','喷施含铜杀菌剂或除藻剂','以均衡施肥提升树体整体活力']},
+  prevention:{en:'Prune to open the canopy — algae favours shaded, humid leaf surfaces.',zh:'修剪疏开树冠——藻类偏好荫蔽潮湿的叶面环境。'},
+  sig:{h:[8,26],s:[.5,.85],l:[.4,.6],e:[.34,.56]}},
+ {id:'anthracnose',name:{en:'Anthracnose',zh:'炭疽病'},sci:{en:'Colletotrichum gloeosporioides',zh:'Colletotrichum gloeosporioides（胶孢炭疽菌）'},cat:{en:'Fungal · Leaf/Fruit',zh:'真菌病害 · 叶片/果实'},severity:'moderate',
+  symptoms:{en:['Dark, sunken lesions on the fruit husk','Premature fruit drop','Twig dieback starting from the tips'],
+            zh:['果壳出现暗色凹陷病斑','果实提早脱落','枝梢从末端开始枯死']},
+  treatment:{en:['Remove and destroy infected fruit and twigs','Spray mancozeb or a copper-based fungicide at flowering and fruit-set','Avoid overhead irrigation that splashes spores onto fruit'],
+             zh:['清除并销毁受感染的果实与枝条','在开花与坐果期喷施代森锰锌或含铜杀菌剂','避免顶部灌溉将孢子溅至果实']},
+  prevention:{en:'Keep tree vigour high and prune out dead wood each season.',zh:'保持树势旺盛，每季修剪清除枯枝。'},
+  sig:{h:[0,20],s:[.3,.6],l:[.14,.3],e:[.5,.76]}},
+ {id:'pink-disease',name:{en:'Pink Disease (Upas)',zh:'粉红病（Upas菌核病）'},sci:{en:'Corticium salmonicolor',zh:'Corticium salmonicolor（鲑色伏革菌）'},cat:{en:'Fungal · Branch',zh:'真菌病害 · 枝条'},severity:'moderate',
+  symptoms:{en:['Pinkish-white silky mycelial threads coating branches and shoots','Bark cracking beneath the coating','Dieback of the branch beyond the infection point'],
+            zh:['枝条与嫩梢表面覆盖粉白色丝状菌丝','菌丝覆盖处树皮开裂','感染点以外的枝条枯死']},
+  treatment:{en:['Prune out and burn infected branches well below the visible growth','Spray exposed cuts and nearby bark with a mancozeb fungicide','Re-check pruned trees monthly during humid months'],
+             zh:['在可见病斑以下大幅修剪并烧毁病枝','对切口及周边树皮喷施代森锰锌杀菌剂','潮湿季节每月复查已修剪的树木']},
+  prevention:{en:'Maintain 10×10m spacing and clear undergrowth to lower humidity.',zh:'保持10×10米株距并清除下层杂草以降低湿度。'},
+  sig:{h:[318,346],s:[.12,.4],l:[.55,.82],e:[.18,.4]}},
+ {id:'sooty-mould',name:{en:'Sooty Mould',zh:'煤烟病'},sci:{en:'Black mildew fungi (on insect honeydew)',zh:'黑霉菌（寄生于昆虫蜜露上）'},cat:{en:'Fungal · Secondary',zh:'真菌病害 · 继发性'},severity:'low',
+  symptoms:{en:['Black, crusty coating on leaves, twigs and fruit surface','Usually follows a mealybug or scale-insect infestation','Leaves look dusty rather than diseased'],
+            zh:['叶片、枝条与果实表面出现黑色结痂状覆盖物','通常伴随粉蚧或介壳虫危害发生','叶片看起来像蒙尘而非真正病变']},
+  treatment:{en:['Control the honeydew-producing insects first (mealybug / scale)','Wash off light mould coating with a mild soap-water spray','Improve airflow and light penetration through pruning'],
+             zh:['优先防治产生蜜露的害虫（粉蚧 / 介壳虫）','轻度霉层可用稀释肥皂水冲洗','修剪改善通风与透光']},
+  prevention:{en:'Regular pest scouting stops the mould before it forms.',zh:'定期巡查害虫可在霉层形成前加以阻止。'},
+  sig:{h:[0,360],s:[0,.15],l:[.04,.2],e:[.28,.55]}},
+ {id:'fruit-borer',name:{en:'Fruit Borer',zh:'果实蛀虫'},sci:{en:'Conogethes punctiferalis',zh:'Conogethes punctiferalis（桃蛀螟）'},cat:{en:'Pest · Fruit',zh:'虫害 · 果实'},severity:'moderate',
+  symptoms:{en:['Small entry holes on the fruit husk with sawdust-like frass','Premature fruit drop','Larvae visible when fruit is cut open'],
+            zh:['果壳上有小蛀孔并伴有木屑状虫粪','果实提早脱落','剖开果实可见幼虫']},
+  treatment:{en:['Collect and destroy infested fallen fruit immediately','Bag young fruit to prevent egg-laying','Apply deltamethrin only if infestation is heavy, per label rate'],
+             zh:['立即收集并销毁受害落果','对幼果套袋以防成虫产卵','仅在虫害严重时按标签剂量施用溴氰菊酯']},
+  prevention:{en:'Encourage natural predators (Tachinid flies) and keep the orchard floor clean.',zh:'保护天敌（寄蝇）并保持果园地面清洁。'},
+  sig:{h:[28,50],s:[.2,.4],l:[.28,.5],e:[.55,.82]}},
+ {id:'stem-borer',name:{en:'Stem / Trunk Borer',zh:'茎干蛀虫'},sci:{en:'Batocera sp. / Xyleutes sp.',zh:'Batocera sp. / Xyleutes sp.（天牛 / 木蠹蛾）'},cat:{en:'Pest · Trunk',zh:'虫害 · 树干'},severity:'critical',
+  symptoms:{en:['Round holes in the trunk or major branches','Sawdust-like frass accumulating at the base','Wilting of the branch above the entry point'],
+            zh:['树干或主枝上有圆形蛀孔','树干基部堆积木屑状虫粪','蛀入点以上枝条萎蔫']},
+  treatment:{en:['Probe the tunnel with wire to kill the larva, then seal with grafting wax','Cut and destroy severely tunnelled branches','Wrap young trunks to deter adult beetles from laying eggs'],
+             zh:['用铁丝探入蛀道刺杀幼虫，再以嫁接蜡封口','严重蛀空的枝条应切除销毁','幼树树干包裹保护，防止成虫产卵']},
+  prevention:{en:'Keep bark free of wounds — beetles target damaged or stressed trees.',zh:'保持树皮无伤口——甲虫偏好攻击受损或长势弱的树木。'},
+  sig:{h:[22,46],s:[.24,.46],l:[.28,.5],e:[.6,.86]}},
+ {id:'mealybug',name:{en:'Mealybug Infestation',zh:'粉蚧危害'},sci:{en:'Pseudococcus sp.',zh:'Pseudococcus sp.（粉蚧属）'},cat:{en:'Pest · Sap-sucker',zh:'虫害 · 吸汁类'},severity:'low',
+  symptoms:{en:['White, cottony clusters on stems, leaf axils and young fruit','Sticky honeydew residue, often followed by sooty mould','Stunted new growth on heavily infested shoots'],
+            zh:['茎部、叶腋与幼果处出现白色棉絮状聚集物','分泌黏性蜜露，常引发煤烟病','受害严重的嫩梢生长受抑']},
+  treatment:{en:['Spray affected areas with lambda-cyhalothrin or a horticultural oil','Introduce natural predators (ladybird beetles) where possible','Prune out heavily infested shoot tips'],
+             zh:['对受害部位喷施高效氯氟氰菊酯或园艺用油','有条件时引入天敌（瓢虫）','修剪清除严重受害的嫩梢']},
+  prevention:{en:'Regular sanitation and scouting during dry spells when mealybugs spike.',zh:'干旱季节粉蚧易爆发，需加强清园与巡查。'},
+  sig:{h:[55,125],s:[0,.13],l:[.75,.95],e:[.28,.5]}},
+];
+const SYMPTOM_BANK = [
+ {label:{en:'Watery gum oozing from the trunk',zh:'树干渗出水状胶质'},map:{'patch-canker':3}},
+ {label:{en:'Wilting + yellowing canopy, roots soft or brown',zh:'树冠萎蔫黄化，根部软烂或褐变'},map:{'root-rot':3}},
+ {label:{en:'Brown, water-soaked spots on leaves',zh:'叶片出现褐色水浸状斑点'},map:{'leaf-blight':3,'anthracnose':1}},
+ {label:{en:'Orange / rust velvety spots on leaves',zh:'叶片出现橙红/铁锈色天鹅绒状斑点'},map:{'algal-leaf-spot':3}},
+ {label:{en:'Dark sunken lesions on fruit husk',zh:'果壳出现暗色凹陷病斑'},map:{'anthracnose':3,'fruit-borer':1}},
+ {label:{en:'Pink-white threads coating branches',zh:'枝条覆盖粉白色丝状物'},map:{'pink-disease':3}},
+ {label:{en:'Black sooty coating on leaves / twigs',zh:'叶片/枝条覆盖黑色煤烟状物质'},map:{'sooty-mould':3,'mealybug':1}},
+ {label:{en:'Small holes + sawdust on fruit',zh:'果实上有小孔并伴有木屑'},map:{'fruit-borer':3}},
+ {label:{en:'Holes in trunk/branch + sawdust at base',zh:'树干/枝条有蛀孔，基部有木屑堆积'},map:{'stem-borer':3}},
+ {label:{en:'White cottony clusters on stems',zh:'茎部出现白色棉絮状聚集物'},map:{'mealybug':3}},
+ {label:{en:'Canopy looks even and green, no symptoms',zh:'树冠均匀青绿，无异常症状'},map:{'healthy':3}},
+];
+
+/* ---------- orchard data generation ---------- */
+const VARIETIES = [
+  {code:'D197',en:'Musang King',zh:'猫山王'},
+  {code:'D24',en:'D24 Sultan',zh:'D24 苏丹王'},
+  {code:'D200',en:'Black Thorn',zh:'黑刺'},
+  {code:'D175',en:'Red Prawn',zh:'红虾'},
+];
+function varietyFull(v){ return STATE.lang==='zh' ? `${v.zh} (${v.code})` : `${v.en} (${v.code})` }
+function varietyShort(v){ return STATE.lang==='zh' ? v.zh : v.en }
+const STAGE_ICON = {Growing:'sapling',Flowering:'flowering',Fruiting:'fruiting','Harvest-Ready':'harvestReady',Harvested:'harvested',Dormant:'dormant'};
+const HOUSEHOLDS = [
+  {surname:'Tan', en:'The Tan Family', zh:'陈家'},
+  {surname:'Lim', en:'The Lim Family', zh:'林家'},
+  {surname:'Wong', en:'The Wong Family', zh:'黄家'},
+  {surname:'Raj', en:'The Raj Family', zh:'拉惹家'},
+  {surname:'Farah', en:'The Farah Family', zh:'法拉家'},
+  {surname:'Aisyah', en:'The Aisyah Family', zh:'艾莎家'},
+  {surname:'Devi', en:'The Devi Family', zh:'黛薇家'},
+  {surname:'Chong', en:'The Chong Family', zh:'张家'},
+  {surname:'Yusof', en:'The Yusof Family', zh:'尤索夫家'},
+  {surname:'Ng', en:'The Ng Family', zh:'伍家'},
+];
+function householdName(h){ return STATE.lang==='zh' ? h.zh : h.en }
+
+function buildOrchard(){
+  const groups=[]; const trees=[]; const members=[];
+  const issuePlan = [
+    {g:1,t:1,d:'algal-leaf-spot',sev:'low'},
+    {g:3,t:3,d:'pink-disease',sev:'moderate'},
+    {g:6,t:0,d:'patch-canker',sev:'critical'},
+    {g:8,t:2,d:'mealybug',sev:'low'},
+  ];
+  for(let g=1; g<=10; g++){
+    const gid = 'G'+String(g).padStart(2,'0');
+    const tiers = ['A','B','B','B','C'];
+    const groupTrees=[];
+    tiers.forEach((tier,idx)=>{
+      const n = groupTrees.filter(t=>t.tier===tier).length+1;
+      const treeId = `BB-${gid}-${tier}${n}`;
+      let stage;
+      const r = rng();
+      if(g<=1) stage = r<.5?'Harvest-Ready':'Fruiting';
+      else if(g<=3) stage = r<.6?'Fruiting':'Flowering';
+      else if(g<=6) stage = r<.55?'Flowering':'Growing';
+      else stage = r<.75?'Growing':'Flowering';
+      if(g===9 && idx===4) stage='Harvested';
+      if(g===10 && idx===0) stage='Dormant';
+      const issue = issuePlan.find(p=>p.g===g && p.t===idx);
+      trees.push({
+        id:treeId, group:gid, tier, idx, variety:pick(VARIETIES),
+        age: randInt(4,7), stage,
+        health: issue?'Issue':(rng()<0.14?'Watch':'Healthy'),
+        issueId: issue?issue.d:null, severity: issue?issue.sev:null,
+        lastUpdateEn: `${randInt(1,27)} Aug 2026`, lastUpdateZh: `2026年8月${randInt(1,27)}日`,
+        bloomRate: stage==='Flowering'?randInt(55,92):null,
+        expectedFruit: (stage==='Fruiting'||stage==='Harvest-Ready')?randInt(8,22):null,
+        weightKg: stage==='Harvested'?randInt(28,46):null,
+        grade: stage==='Harvested'?pick(['exportA','exportA','premiumB']):null,
+      });
+      groupTrees.push(trees[trees.length-1]);
+    });
+    groups.push({id:gid,idx:g,trees:groupTrees});
+    const hh = HOUSEHOLDS[g-1];
+    members.push({
+      id:'M'+String(g).padStart(2,'0'), household:hh, group:gid,
+      joinMonth: randInt(3,11), planMonths:24, referralCode:`BEIBEI${hh.surname.toUpperCase()}`,
+      credits: randInt(0,180), referrals: randInt(0,4),
+      boxOpened: g!==5 && g!==9,
+    });
+  }
+  return {groups,trees,members};
+}
+const ORCHARD = buildOrchard();
+function treeUpdated(t){ return STATE.lang==='zh' ? t.lastUpdateZh : t.lastUpdateEn }
+function diseaseById(id){return DISEASES.find(d=>d.id===id)}
+function treesInGroup(gid){return ORCHARD.trees.filter(t=>t.group===gid)}
+function memberByGroup(gid){return ORCHARD.members.find(m=>m.group===gid)}
+
+/* ---------- app state (extends STATE defined above) ---------- */
+Object.assign(STATE, {
+  view:'landing', // landing | member | backoffice
+  memberSub:'dashboard',
+  backSub:'overview',
+  currentMemberId: ORCHARD.members[2].id,
+  diagLogs:[], // {treeId, diseaseId, confidence, date, method}
+  diagTab:'photo',
+  selectedSymptoms:new Set(),
+  fulfillment:[
+    {id:'F1',memberIdx:0,tree:'BB-G01-A1',kg:6,type:'ftGift'},
+    {id:'F2',memberIdx:1,tree:'BB-G02-B2',kg:4,type:'ftPickup'},
+    {id:'F3',memberIdx:2,tree:'BB-G03-B1',kg:9,type:'ftConsign'},
+    {id:'F4',memberIdx:3,tree:'BB-G04-A1',kg:5,type:'ftGift'},
+    {id:'F5',memberIdx:4,tree:'BB-G01-B3',kg:7,type:'ftConsign'},
+    {id:'F6',memberIdx:5,tree:'BB-G02-C1',kg:3,type:'ftPickup'},
+  ],
+  fulfillmentStages: {F1:'packaging',F2:'packaging',F3:'dispatched',F4:'dispatched',F5:'delivered',F6:'delivered'},
+});
+
+/* ---------- image analysis heuristic (real pixel data, not fabricated) ---------- */
+function rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=0;s=0} else {
+    const d=max-min; s=l>.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4}
+    h*=60;
+  }
+  return [h,s,l];
+}
+function analyzeImageFile(file){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = e=>{ img.onload=()=>{
+      const size=48;
+      const canvas=document.createElement('canvas'); canvas.width=size;canvas.height=size;
+      const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,size,size);
+      const data=ctx.getImageData(0,0,size,size).data;
+      let hs=0,hc=0,ss=0,ls=0,n=0; const lums=[];
+      for(let i=0;i<data.length;i+=4){
+        const [h,s,l]=rgbToHsl(data[i],data[i+1],data[i+2]);
+        hs+=Math.sin(h*Math.PI/180); hc+=Math.cos(h*Math.PI/180);
+        ss+=s; ls+=l; n++;
+        lums.push(0.2126*data[i]+0.7152*data[i+1]+0.0722*data[i+2]);
+      }
+      let avgH=Math.atan2(hs,hc)*180/Math.PI; if(avgH<0)avgH+=360;
+      const avgS=ss/n, avgL=ls/n;
+      let edge=0,ec=0;
+      for(let y=0;y<size-1;y++){for(let x=0;x<size-1;x++){
+        const i=y*size+x;
+        edge+=Math.abs(lums[i]-lums[i+1])+Math.abs(lums[i]-lums[i+size]); ec+=2;
+      }}
+      const edginess=Math.min(1,(edge/ec)/60);
+      resolve({h:avgH,s:avgS,l:avgL,e:edginess, dataUrl:e.target.result});
+    }; img.src=e.target.result; };
+    reader.readAsDataURL(file);
+  });
+}
+function hueDist(h,range){
+  const mid=(range[0]+range[1])/2;
+  let d=Math.abs(h-mid); d=Math.min(d,360-d);
+  const span=(range[1]-range[0])/2+18;
+  return Math.min(1,d/span/2.2);
+}
+function rangeDist(v,range){
+  if(v>=range[0]&&v<=range[1])return 0;
+  const d=v<range[0]?range[0]-v:v-range[1];
+  return Math.min(1,d/0.35);
+}
+function matchDisease(sample){
+  const scored = DISEASES.map(d=>{
+    const dh=hueDist(sample.h,d.sig.h), ds=rangeDist(sample.s,d.sig.s), dl=rangeDist(sample.l,d.sig.l), de=rangeDist(sample.e,d.sig.e);
+    const dist = dh*0.4+ds*0.22+dl*0.22+de*0.16;
+    return {d,dist};
+  }).sort((a,b)=>a.dist-b.dist);
+  const conf = arr=>Math.round(Math.max(38,Math.min(95,100-arr.dist*118)));
+  return scored.map(x=>({disease:x.d,confidence:conf(x)}));
+}
+
+/* ================= RENDER: SHELL ================= */
+function render(){
+  const app=document.getElementById('app');
+  app.setAttribute('data-lang', STATE.lang);
+  app.innerHTML = topnav() + (
+    STATE.view==='landing'? renderLanding():
+    STATE.view==='member'? renderMemberShell():
+    renderBackofficeShell()
+  );
+  wireEvents();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function setView(v){STATE.view=v; render();}
+function setLang(l){ if(STATE.lang===l) return; STATE.lang=l; render(); }
+
+function topnav(){
+  return `
+  <div class="topnav"><div class="topnav-inner">
+    <div class="brand" data-nav="landing">
+      <svg class="brand-mark" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="var(--primary)"/><path d="M16 8C16 8 9 9 9 16C9 21 12 23 16 23C20 23 23 21 23 16C23 9 16 8 16 8Z" fill="var(--accent)"/><g stroke="var(--primary-strong)" stroke-width=".9" opacity=".6"><path d="M11 12l1.6 2.8M14 9.6l1.2 3M17.4 9l0 3.4M20 10.6l-1.3 3M22 13l-1.6 2.8"/></g></svg>
+      <div class="brand-text"><b>Orchard OS</b><span>贝贝农场 BeiBei Farm</span></div>
+    </div>
+    <div class="navtabs">
+      <button data-nav="landing" class="${STATE.view==='landing'?'active':''}">${tr('navOverview')}</button>
+      <button data-nav="member" class="${STATE.view==='member'?'active':''}">${tr('navMember')}</button>
+      <button data-nav="backoffice" class="${STATE.view==='backoffice'?'active':''}">${tr('navBackoffice')}</button>
+    </div>
+    <div class="langtoggle">
+      <button data-lang="zh" class="${STATE.lang==='zh'?'active':''}">中文</button>
+      <button data-lang="en" class="${STATE.lang==='en'?'active':''}">EN</button>
+    </div>
+  </div></div>`;
+}
+
+/* ================= RENDER: LANDING ================= */
+function renderLanding(){
+  return `
+  <div class="hero">
+    <svg class="hero-durian" viewBox="0 0 200 200"><circle cx="100" cy="100" r="70" fill="#fff"/><g stroke="#fff" stroke-width="2"><path d="M40 60l8 14M55 42l6 15M72 30l4 16M90 24l1 16M110 24l-1 16M128 30l-4 16M145 42l-6 15M160 60l-8 14M40 140l8-14M55 158l6-15M72 170l4-16M90 176l1-16M110 176l-1-16M128 170l-4-16M145 158l-6-15M160 140l-8-14M28 90l16 4M28 110l16-4M172 90l-16 4M172 110l-16-4"/></g></svg>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">${tr('heroEyebrow')}</div>
+      <h1>${tr('heroTitle')}</h1>
+      <p class="hero-sub">${tr('heroSub')}</p>
+      <p class="hero-cn">${tr('heroTagAlt')}</p>
+      <div class="hero-ctas">
+        <button class="btn btn-accent facet-sm" data-nav="member">${tr('heroCtaMember')}</button>
+        <button class="btn btn-outline facet-sm" style="color:#fff;box-shadow:inset 0 0 0 1.4px rgba(255,255,255,.5)" data-nav="backoffice">${tr('heroCtaBackoffice')}</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>180</b><span>${tr('heroStat1')}</span></div>
+        <div class="hero-stat"><b>5${STATE.lang==='zh'?'棵/组':' / group'}</b><span>${tr('heroStat2')}</span></div>
+        <div class="hero-stat"><b>10</b><span>${tr('heroStat3')}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-eyebrow">${tr('whyEyebrow')}</div>
+        <h2>${tr('whyTitle')}</h2>
+        <p>${tr('whyDesc')}</p>
+      </div>
+      <div class="compare">
+        <div class="compare-col old">
+          <h3><span class="dot dot-critical"></span>${tr('compareOldTitle')}</h3>
+          <ul><li>${tr('old1')}</li><li>${tr('old2')}</li><li>${tr('old3')}</li><li>${tr('old4')}</li></ul>
+        </div>
+        <div class="compare-col new">
+          <h3><span class="dot dot-good"></span>${tr('compareNewTitle')}</h3>
+          <ul><li>${tr('new1')}</li><li>${tr('new2')}</li><li>${tr('new3')}</li><li>${tr('new4')}</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-eyebrow">${tr('coreEyebrow')}</div>
+        <h2>${tr('coreTitle')}</h2>
+        <p>${tr('coreDesc')}</p>
+      </div>
+      <div class="steps5">
+        <div class="step-card facet-sm"><div class="step-num">01</div><h4>${tr('step1t')}</h4><p>${tr('step1d')}</p></div>
+        <div class="step-card facet-sm"><div class="step-num">02</div><h4>${tr('step2t')}</h4><p>${tr('step2d')}</p></div>
+        <div class="step-card facet-sm"><div class="step-num">03</div><h4>${tr('step3t')}</h4><p>${tr('step3d')}</p></div>
+        <div class="step-card facet-sm"><div class="step-num">04</div><h4>${tr('step4t')}</h4><p>${tr('step4d')}</p></div>
+        <div class="step-card facet-sm"><div class="step-num">05</div><h4>${tr('step5t')}</h4><p>${tr('step5d')}</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-eyebrow">${tr('phaseEyebrow')}</div>
+        <h2>${tr('phaseTitle')}</h2>
+        <p>${tr('phaseDesc')}</p>
+      </div>
+      <div class="pilot-metrics">
+        <div class="pilot-metric"><b>${tr('m1')}</b><span>${tr('m1s')}</span></div>
+        <div class="pilot-metric"><b>${tr('m2')}</b><span>${tr('m2s')}</span></div>
+        <div class="pilot-metric"><b>${tr('m3')}</b><span>${tr('m3s')}</span></div>
+        <div class="pilot-metric"><b>${tr('m4')}</b><span>${tr('m4s')}</span></div>
+        <div class="pilot-metric"><b>${tr('m5')}</b><span>${tr('m5s')}</span></div>
+        <div class="pilot-metric"><b>${tr('m6')}</b><span>${tr('m6s')}</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-eyebrow">${tr('tryEyebrow')}</div>
+        <h2>${tr('tryTitle')}</h2>
+      </div>
+      <div class="entry-grid">
+        <div class="entry-card facet-lg" data-nav="member">
+          ${icon('gift','entry-icon')}
+          <h3>${tr('memberCardTitle')}</h3>
+          <p>${tr('memberCardDesc')}</p>
+          <button class="btn btn-ghost facet-sm">${tr('memberCardBtn')}</button>
+        </div>
+        <div class="entry-card facet-lg" data-nav="backoffice">
+          ${icon('network','entry-icon')}
+          <h3>${tr('backCardTitle')}</h3>
+          <p>${tr('backCardDesc')}</p>
+          <button class="btn btn-ghost facet-sm">${tr('backCardBtn')}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-eyebrow">${tr('roadEyebrow')}</div>
+        <h2>${tr('roadTitle')}</h2>
+      </div>
+      <div class="roadmap">
+        <div class="road-card facet-sm"><div class="road-year">${tr('road1y')}</div><h4>${tr('road1t')}</h4><p>${tr('road1d')}</p></div>
+        <div class="road-card facet-sm"><div class="road-year">${tr('road2y')}</div><h4>${tr('road2t')}</h4><p>${tr('road2d')}</p></div>
+        <div class="road-card facet-sm"><div class="road-year">${tr('road3y')}</div><h4>${tr('road3t')}</h4><p>${tr('road3d')}</p></div>
+        <div class="road-card facet-sm"><div class="road-year">${tr('road4y')}</div><h4>${tr('road4t')}</h4><p>${tr('road4d')}</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="landing-footer">${tr('footer')}</div>
+  `;
+}
+
+/* ================= RENDER: MEMBER PORTAL ================= */
+function memberTabs(){ return [
+  {id:'dashboard',label:tr('tabDashboard')}, {id:'journey',label:tr('tabJourney')}, {id:'harvest',label:tr('tabHarvest')},
+  {id:'referral',label:tr('tabReferral')}, {id:'billing',label:tr('tabBilling')},
+]}
+function currentMember(){return ORCHARD.members.find(m=>m.id===STATE.currentMemberId)}
+function sidebarIcon(path){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`}
+function renderMemberShell(){
+  const m = currentMember();
+  const icons = {
+    dashboard:'<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+    journey:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+    harvest:'<circle cx="12" cy="13" r="7"/><path d="M12 6V3M9 3h6"/>',
+    referral:'<circle cx="8" cy="8" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10.5 9.5 14.5 14.5"/>',
+    billing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>',
+  };
+  return `<div class="appshell">
+    <div class="appsidebar">
+      <div class="side-persona"><label>${tr('viewingAs')}</label>
+        <select id="memberSelect">
+          ${ORCHARD.members.map(mm=>`<option value="${mm.id}" ${mm.id===m.id?'selected':''}>${householdName(mm.household)}</option>`).join('')}
+        </select>
+      </div>
+      ${memberTabs().map(t=>`<button class="sidebtn ${STATE.memberSub===t.id?'active':''}" data-msub="${t.id}">${sidebarIcon(icons[t.id])}${t.label}</button>`).join('')}
+      <div class="sidefoot small muted">${tr('householdGroup')} <b class="mono">${m.group}</b><br>${trf('memberSince',{n:m.joinMonth})}</div>
+    </div>
+    <div class="appmain">${renderMemberView(m)}</div>
+  </div>`;
+}
+function renderMemberView(m){
+  const trees = treesInGroup(m.group);
+  if(!m.boxOpened) return renderBlindBox(m);
+  if(STATE.memberSub==='dashboard') return renderMemberDashboard(m,trees);
+  if(STATE.memberSub==='journey') return renderMemberJourney(m,trees);
+  if(STATE.memberSub==='harvest') return renderMemberHarvest(m,trees);
+  if(STATE.memberSub==='referral') return renderMemberReferral(m);
+  if(STATE.memberSub==='billing') return renderMemberBilling(m);
+  return '';
+}
+function renderBlindBox(m){
+  const trees = treesInGroup(m.group);
+  return `
+  <div class="view-head"><div><h2>${trf('openBoxTitle',{name:householdName(m.household)})}</h2><p>${tr('openBoxDesc')}</p></div></div>
+  <div class="boxgrid" id="boxgrid">
+    ${trees.map((t,i)=>`
+    <div class="boxcard facet-lg" data-box="${i}">
+      <div class="front">${icon('gift')}</div>
+      <div class="back tier-${t.tier}">
+        ${icon(STAGE_ICON[t.stage])}
+        <b class="mono">${t.id}</b>
+        <span>${tierLabel(t.tier)} · ${varietyShort(t.variety)}</span>
+      </div>
+    </div>`).join('')}
+  </div>
+  <div class="mt24"><button class="btn btn-accent facet-sm" id="finishReveal" style="display:none">${tr('continueDash')}</button></div>
+  `;
+}
+function renderMemberDashboard(m,trees){
+  return `
+  <div class="view-head">
+    <div><h2>${tr('myFiveTrees')}</h2><p>${householdName(m.household)} · ${tr('householdGroup')} ${m.group}</p></div>
+    <div class="pill pill-accent">${icon('qr')} ${tr('qrActive')}</div>
+  </div>
+  <div class="treegrid">
+    ${trees.map(t=>treeCard(t)).join('')}
+  </div>`;
+}
+function treeCard(t){
+  const healthPill = t.health==='Healthy'?'pill-good':t.health==='Watch'?'pill-warn':'pill-critical';
+  return `
+  <div class="treecard facet-sm" data-treeid="${t.id}">
+    <div class="treecard-art tier-${t.tier}">${icon(STAGE_ICON[t.stage])}</div>
+    <div class="treecard-body">
+      <div class="treecard-id"><span>${t.id}</span><span class="pill pill-neutral">${tierLabel(t.tier)}</span></div>
+      <h4>${varietyShort(t.variety)}</h4>
+      <div class="treecard-meta">
+        <span class="pill pill-info">${L(STAGE_LABEL[t.stage])}</span>
+        <span class="pill ${healthPill}">${L(HEALTH_LABEL[t.health])}</span>
+      </div>
+    </div>
+  </div>`;
+}
+function treeDetailModal(id){
+  const t = ORCHARD.trees.find(x=>x.id===id); if(!t) return '';
+  const dz = t.issueId ? diseaseById(t.issueId) : null;
+  return `
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal facet-lg">
+      <div class="modal-head">
+        <div><div class="mono small muted">${t.id}</div><h3>${varietyFull(t.variety)}</h3></div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="treecard-art tier-${t.tier}" style="height:130px;margin-bottom:16px">${icon(STAGE_ICON[t.stage])}</div>
+        <div class="flex gap8" style="flex-wrap:wrap">
+          <span class="pill pill-neutral">${tierLabel(t.tier)}</span>
+          <span class="pill pill-info">${L(STAGE_LABEL[t.stage])}</span>
+          <span class="pill ${t.health==='Healthy'?'pill-good':t.health==='Watch'?'pill-warn':'pill-critical'}">${L(HEALTH_LABEL[t.health])}</span>
+          <span class="pill pill-neutral">${trf('yrsOld',{n:t.age})}</span>
+        </div>
+        <div class="mt16 small muted">${trf('lastUpdated',{d:treeUpdated(t)})}</div>
+        ${t.bloomRate!==null?`<div class="mt16"><div class="barrow"><span class="barlbl">${tr('bloomRate')}</span><div class="bartrack"><div class="barfill" style="width:${t.bloomRate}%;background:var(--accent)"></div></div><span class="barval">${t.bloomRate}%</span></div></div>`:''}
+        ${t.expectedFruit!==null?`<p class="small muted mt8">${trf('expectedFruit',{n:t.expectedFruit})}</p>`:''}
+        ${t.weightKg!==null?`<p class="small muted mt8">${trf('lastHarvest',{kg:t.weightKg,g:L(GRADE_LABEL[t.grade])})}</p>`:''}
+        ${dz?`<div class="mt16" style="background:var(--critical-soft);padding:14px"><b style="color:var(--critical)">⚠ ${L(dz.name)}</b><p class="small mt8" style="color:var(--text)">${L(dz.symptoms)[0]} ${tr('issueNote')}</p></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+function renderMemberJourney(m,trees){
+  const steps=[tr('jStep1'),tr('jStep2'),tr('jStep3'),tr('jStep4'),tr('jStep5'),tr('jStep6'),tr('jStep7'),tr('jStep8')];
+  const stageOrder={Growing:2,Flowering:3,Fruiting:4,'Harvest-Ready':5,Harvested:6,Dormant:2};
+  const maxStage = Math.max(...trees.map(t=>stageOrder[t.stage]||2));
+  return `
+  <div class="view-head"><div><h2>${tr('journeyTitle')}</h2><p>${tr('journeyDesc')}</p></div></div>
+  <div class="card facet-sm mb16">
+    <div class="stepper">
+      ${steps.map((s,i)=>`<div class="stepnode ${i<maxStage?'done':i===maxStage?'current':''}"><div class="stepcircle">${i+1}</div><span>${s}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card facet-sm">
+    <h3 style="font-size:15px;margin-bottom:12px">${tr('recentUpdates')}</h3>
+    ${trees.slice().sort((a,b)=>b.id<a.id?1:-1).map(t=>`
+      <div class="flex items-center gap12" style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <span style="width:20px">${icon(STAGE_ICON[t.stage])}</span>
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:600">${t.id} <span class="muted" style="font-weight:400">— ${L(STAGE_LABEL[t.stage])}${t.bloomRate?`, ${t.bloomRate}%`:''}</span></div>
+          <div class="small muted">${tr('updatedOn')} ${treeUpdated(t)}</div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+function renderMemberHarvest(m,trees){
+  const readyTrees = trees.filter(t=>t.stage==='Harvest-Ready'||t.stage==='Harvested');
+  if(readyTrees.length===0){
+    return `<div class="view-head"><div><h2>${tr('harvestTitle')}</h2><p>${tr('harvestEmptyDesc')}</p></div></div>
+    <div class="card facet-sm empty">${tr('harvestEmptyCard')}</div>`;
+  }
+  const t = readyTrees[0];
+  const total = t.expectedFruit? t.expectedFruit*1.5 : 24;
+  return `
+  <div class="view-head"><div><h2>${tr('harvestTitle')}</h2><p>${trf('harvestReadyDesc',{id:t.id})}</p></div></div>
+  <div class="twocol">
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:6px">${trf('allocTitle',{kg:total.toFixed(0),id:t.id})}</h3>
+      <p class="small muted mb16">${tr('allocDesc')}</p>
+      <div id="allocWrap">
+        ${[['Eat','allocEat'],['Gift','allocGift'],['Sell','allocSell'],['Consign','allocConsign']].map(([k,key],i)=>`
+        <div class="alloc-row"><label>${tr(key)}</label><input type="range" min="0" max="100" value="${[30,25,25,20][i]}" data-alloc="${k}"><span class="kgval" data-allocval="${k}">0 kg</span></div>`).join('')}
+      </div>
+      <div class="small muted mt8">${tr('totalAllocated')} <b id="allocTotal" class="mono">100%</b></div>
+      <button class="btn btn-accent facet-sm mt16" id="genGiftCard">${icon('gift')} ${tr('genGiftBtn')}</button>
+      <div id="giftCardOut"></div>
+    </div>
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:12px">${tr('fulfilRulesTitle')}</h3>
+      <ul style="margin:0;padding-left:18px;font-size:12.5px;color:var(--text-muted);line-height:1.8">
+        <li>${tr('fr1')}</li><li>${tr('fr2')}</li><li>${tr('fr3')}</li><li>${tr('fr4')}</li>
+      </ul>
+    </div>
+  </div>`;
+}
+function renderMemberReferral(m){
+  return `
+  <div class="view-head"><div><h2>${tr('referralTitle')}</h2><p>${tr('referralDesc')}</p></div></div>
+  <div class="twocol">
+    <div class="card facet-sm">
+      <h3 style="font-size:15px">${tr('yourCode')}</h3>
+      <div class="mono" style="font-size:22px;font-weight:700;color:var(--primary);margin-top:10px">${m.referralCode}</div>
+      <p class="small muted mt8">${tr('codeDesc')}</p>
+      <div class="statgrid mt16" style="margin-bottom:0">
+        <div class="stat-tile"><div class="lbl">${tr('creditsEarned')}</div><div class="val">RM ${m.credits}</div></div>
+        <div class="stat-tile"><div class="lbl">${tr('referralsLabel')}</div><div class="val">${m.referrals}</div></div>
+      </div>
+    </div>
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:14px">${tr('flywheelTitle')}</h3>
+      <div class="flex" style="flex-direction:column;gap:10px">
+        ${[tr('fw1'),tr('fw2'),tr('fw3'),tr('fw4')].map((s,i)=>`
+        <div class="flex items-center gap12"><span class="pill pill-neutral mono" style="width:24px;justify-content:center">${i+1}</span><span class="small">${s}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function renderMemberBilling(m){
+  const monthsPaid = Math.min(m.joinMonth+6,m.planMonths);
+  const pct = Math.round(monthsPaid/m.planMonths*100);
+  return `
+  <div class="view-head"><div><h2>${tr('billingTitle')}</h2><p>${tr('billingDesc')}</p></div></div>
+  <div class="twocol">
+    <div class="card facet-sm">
+      <h3 style="font-size:15px">${tr('planProgress')}</h3>
+      <div class="mt16 barrow"><span class="barlbl">${trf('monthOf24',{n:monthsPaid})}</span><div class="bartrack"><div class="barfill" style="width:${pct}%"></div></div><span class="barval">${pct}%</span></div>
+      <table class="mt16" style="width:100%">
+        <thead><tr><th>${tr('monthCol')}</th><th>${tr('amountCol')}</th><th>${tr('statusCol')}</th></tr></thead>
+        <tbody>
+          ${[monthsPaid,monthsPaid-1,monthsPaid-2].filter(x=>x>0).map(mo=>`<tr><td class="mono">${trf('monthOf24',{n:mo}).replace('/24','')}</td><td class="mono">RM 199.00</td><td><span class="pill pill-good">${tr('paidStatus')}</span></td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:12px">${tr('atRenewal')}</h3>
+      <div class="flex" style="flex-direction:column;gap:10px">
+        <button class="btn btn-ghost facet-sm" style="width:100%;justify-content:flex-start">${tr('renewSame')}</button>
+        <button class="btn btn-ghost facet-sm" style="width:100%;justify-content:flex-start">${tr('swapTrees')}</button>
+      </div>
+      <p class="small muted mt16">${tr('renewalNote')}</p>
+    </div>
+  </div>`;
+}
+
+/* ================= RENDER: BACKOFFICE ================= */
+function backTabs(){ return [
+  {id:'overview',label:tr('bOverview')}, {id:'registry',label:tr('bRegistry')}, {id:'flowering',label:tr('bFlowering')},
+  {id:'harvestlog',label:tr('bHarvestLog')}, {id:'diagnosis',label:tr('bDiagnosis')}, {id:'fulfillment',label:tr('bFulfillment')}, {id:'members',label:tr('bMembers')},
+]}
+function renderBackofficeShell(){
+  const icons = {
+    overview:'<rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/>',
+    registry:'<rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 10v10"/>',
+    flowering:'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+    harvestlog:'<path d="M4 19h16M6 19V9l6-5 6 5v10"/>',
+    diagnosis:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+    fulfillment:'<rect x="3" y="7" width="13" height="10" rx="1"/><path d="M16 10h3l2 3v4h-5"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/>',
+    members:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 14c2.8.2 4.9 2.4 5.5 5.6"/>',
+  };
+  return `<div class="appshell">
+    <div class="appsidebar">
+      <div class="side-persona"><label>${tr('signedInAs')}</label>
+        <select disabled style="opacity:.8"><option>${tr('farmOpsAdmin')}</option></select>
+      </div>
+      ${backTabs().map(t=>`<button class="sidebtn ${STATE.backSub===t.id?'active':''}" data-bsub="${t.id}">${sidebarIcon(icons[t.id])}${t.label}</button>`).join('')}
+      <div class="sidefoot small muted">${tr('treesPlanned')}<br>${tr('liveInPilot')}</div>
+    </div>
+    <div class="appmain">${renderBackofficeView()}</div>
+  </div>`;
+}
+function renderBackofficeView(){
+  switch(STATE.backSub){
+    case 'overview': return renderBOverview();
+    case 'registry': return renderBRegistry();
+    case 'flowering': return renderBFlowering();
+    case 'harvestlog': return renderBHarvestLog();
+    case 'diagnosis': return renderBDiagnosis();
+    case 'fulfillment': return renderBFulfillment();
+    case 'members': return renderBMembers();
+  }
+  return '';
+}
+function renderBOverview(){
+  const healthy = ORCHARD.trees.filter(t=>t.health==='Healthy').length;
+  const watch = ORCHARD.trees.filter(t=>t.health==='Watch').length;
+  const issue = ORCHARD.trees.filter(t=>t.health==='Issue').length;
+  const yieldByGroup = ORCHARD.groups.map(g=>({
+    label:g.id, kg: g.trees.reduce((s,t)=>s+(t.weightKg||Math.round((t.expectedFruit||0)*1.4)),0)
+  }));
+  const maxYield = Math.max(...yieldByGroup.map(y=>y.kg),1);
+  return `
+  <div class="view-head"><div><h2>${tr('orchardOverview')}</h2><p>${tr('overviewDesc')}</p></div>
+    <span class="pill pill-info">${tr('fullFarmBadge')}</span></div>
+  <div class="statgrid">
+    <div class="stat-tile"><div class="lbl">${tr('statHealthy')}</div><div class="val">${healthy}<span style="font-size:14px;color:var(--text-faint)"> / 50</span></div><div class="delta delta-up">${Math.round(healthy/50*100)}%${tr('ofPilot')}</div></div>
+    <div class="stat-tile"><div class="lbl">${tr('statWatch')}</div><div class="val">${watch}</div><div class="delta" style="color:var(--warn)">${tr('monitorWeekly')}</div></div>
+    <div class="stat-tile"><div class="lbl">${tr('statIssue')}</div><div class="val">${issue}</div><div class="delta" style="color:var(--critical)">${tr('needsTreatment')}</div></div>
+    <div class="stat-tile"><div class="lbl">${tr('statRenewal')}</div><div class="val">82%</div><div class="delta delta-up">${tr('vsTarget')}</div></div>
+    <div class="stat-tile"><div class="lbl">${tr('statReferral')}</div><div class="val">24%</div><div class="delta delta-up">${tr('referralRatio')}</div></div>
+    <div class="stat-tile"><div class="lbl">${tr('statCost')}</div><div class="val">RM46</div><div class="delta muted">${tr('perMemberMonth')}</div></div>
+  </div>
+  <div class="twocol">
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:14px">${tr('yieldByGroup')}</h3>
+      ${yieldByGroup.map(y=>`<div class="barrow"><span class="barlbl">${y.label}</span><div class="bartrack"><div class="barfill" style="width:${Math.max(4,y.kg/maxYield*100)}%"></div></div><span class="barval">${y.kg}kg</span></div>`).join('')}
+    </div>
+    <div class="card facet-sm">
+      <h3 style="font-size:15px;margin-bottom:14px">${tr('consumptionSplit')}</h3>
+      <div class="stackbar">
+        <div class="stackseg" style="width:32%;background:var(--good)"></div>
+        <div class="stackseg" style="width:28%;background:var(--accent)"></div>
+        <div class="stackseg" style="width:25%;background:var(--info)"></div>
+        <div class="stackseg" style="width:15%;background:var(--secondary)"></div>
+      </div>
+      <div class="stacklegend">
+        <div class="li"><span class="sw" style="background:var(--good)"></span>${tr('legendEat')} 32%</div>
+        <div class="li"><span class="sw" style="background:var(--accent)"></span>${tr('legendGift')} 28%</div>
+        <div class="li"><span class="sw" style="background:var(--info)"></span>${tr('legendSell')} 25%</div>
+        <div class="li"><span class="sw" style="background:var(--secondary)"></span>${tr('legendConsign')} 15%</div>
+      </div>
+      <h3 style="font-size:15px;margin:20px 0 10px">${tr('complaintsTitle')}</h3>
+      <div class="small muted">${tr('complaintsText')}</div>
+    </div>
+  </div>
+  <div class="card facet-sm mt16">
+    <h3 style="font-size:15px;margin-bottom:4px">${tr('healthMapTitle')}</h3>
+    <p class="small muted mb16">${tr('healthMapDesc')}</p>
+    <div class="treegrid">${ORCHARD.trees.slice(0,20).map(t=>treeCard(t)).join('')}</div>
+    <button class="btn btn-ghost facet-sm mt16" data-bsub="registry">${tr('viewFullRegistry')}</button>
+  </div>`;
+}
+function renderBRegistry(){
+  return `
+  <div class="view-head"><div><h2>${tr('registryTitle')}</h2><p>${trf('registryDesc',{n:ORCHARD.trees.length})}</p></div></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>${tr('colTreeId')}</th><th>${tr('colGroup')}</th><th>${tr('colTier')}</th><th>${tr('colVariety')}</th><th>${tr('colAge')}</th><th>${tr('colStage')}</th><th>${tr('colHealth')}</th><th>${tr('colUpdated')}</th><th></th></tr></thead>
+      <tbody>
+        ${ORCHARD.trees.map(t=>`
+        <tr>
+          <td class="mono">${t.id}</td><td>${t.group}</td>
+          <td><span class="pill tier-${t.tier}" style="color:var(--text)">${t.tier}</span></td>
+          <td>${varietyFull(t.variety)}</td><td class="mono">${t.age}${STATE.lang==='zh'?'年':'y'}</td>
+          <td><span class="pill pill-info">${L(STAGE_LABEL[t.stage])}</span></td>
+          <td><span class="pill ${t.health==='Healthy'?'pill-good':t.health==='Watch'?'pill-warn':'pill-critical'}">${L(HEALTH_LABEL[t.health])}</span></td>
+          <td class="mono small">${treeUpdated(t)}</td>
+          <td><button class="rowbtn" data-treeid="${t.id}">${tr('colView')}</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function renderBFlowering(){
+  return `
+  <div class="view-head"><div><h2>${tr('floweringTitle')}</h2><p>${tr('floweringDesc')}</p></div></div>
+  <div class="treegrid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+    ${ORCHARD.groups.map(g=>{
+      const bloom = g.trees.filter(t=>t.bloomRate!==null);
+      const avgBloom = bloom.length? Math.round(bloom.reduce((s,t)=>s+t.bloomRate,0)/bloom.length):null;
+      const fruiting = g.trees.filter(t=>t.expectedFruit).length;
+      const stageMix = [...new Set(g.trees.map(t=>L(STAGE_LABEL[t.stage])))];
+      return `<div class="card facet-sm">
+        <div class="flex items-center" style="justify-content:space-between"><h4 style="font-size:14.5px">${g.id}</h4><span class="pill pill-neutral">${householdName(memberByGroup(g.id).household)}</span></div>
+        ${avgBloom!==null?`<div class="mt16 barrow"><span class="barlbl">${tr('bloomLabel')}</span><div class="bartrack"><div class="barfill" style="width:${avgBloom}%;background:var(--accent)"></div></div><span class="barval">${avgBloom}%</span></div>`:`<p class="small muted mt16">${tr('noBloom')}</p>`}
+        <p class="small muted mt8">${trf('fruitingOf',{n:fruiting,s:stageMix.join(STATE.lang==='zh'?'、':', ')})}</p>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function renderBHarvestLog(){
+  const harvested = ORCHARD.trees.filter(t=>t.weightKg);
+  const rows = harvested.length? harvested : ORCHARD.trees.slice(0,3);
+  const allocSamples = STATE.lang==='zh'
+    ? ['自吃 32%','送礼 40%','自售 20%','代售 60%']
+    : ['Eat 32%','Gift 40%','Sell 20%','Consign 60%'];
+  return `
+  <div class="view-head"><div><h2>${tr('harvestLogTitle')}</h2><p>${tr('harvestLogDesc')}</p></div>
+    <button class="btn btn-accent facet-sm">${tr('logNewHarvest')}</button></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>${tr('colDate')}</th><th>${tr('colTreeId')}</th><th>${tr('colWeight')}</th><th>${tr('colGrade')}</th><th>${tr('colAllocation')}</th><th>${tr('colRecordedBy')}</th></tr></thead>
+      <tbody>
+        ${rows.map((t,i)=>`
+        <tr>
+          <td class="mono">${treeUpdated(t)}</td><td class="mono">${t.id}</td>
+          <td class="mono">${t.weightKg||randInt(24,42)} kg</td>
+          <td><span class="pill pill-accent">${L(GRADE_LABEL[t.grade||'exportA'])}</span></td>
+          <td>${allocSamples[i%4]}</td>
+          <td>${tr('farmOps')}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* ---- Disease diagnosis view ---- */
+function renderBDiagnosis(){
+  return `
+  <div class="view-head"><div><h2>${tr('diagTitle')}</h2><p>${tr('diagDesc')}</p></div></div>
+  <div class="diag-tabs">
+    <button class="${STATE.diagTab==='photo'?'active':''}" data-diagtab="photo">${tr('diagPhoto')}</button>
+    <button class="${STATE.diagTab==='checklist'?'active':''}" data-diagtab="checklist">${tr('diagChecklist')}</button>
+    <button class="${STATE.diagTab==='library'?'active':''}" data-diagtab="library">${tr('diagLibrary')}</button>
+    <button class="${STATE.diagTab==='log'?'active':''}" data-diagtab="log">${tr('diagLog')} (${STATE.diagLogs.length})</button>
+  </div>
+  <div id="diagBody">${renderDiagTab()}</div>
+  `;
+}
+function renderDiagTab(){
+  if(STATE.diagTab==='photo') return renderDiagPhoto();
+  if(STATE.diagTab==='checklist') return renderDiagChecklist();
+  if(STATE.diagTab==='library') return renderDiagLibrary();
+  if(STATE.diagTab==='log') return renderDiagLog();
+  return '';
+}
+function renderDiagPhoto(){
+  return `
+  <div class="card facet-sm" style="margin-bottom:0">
+    <label class="upload-zone facet-sm" id="uploadZone" style="cursor:pointer">
+      ${icon('upload')}
+      <p><b>${tr('uploadTitle')}</b><br>${tr('uploadSub')}</p>
+      <input type="file" id="photoInput" accept="image/*" style="display:none">
+    </label>
+    <div id="analysisOut" class="mt16"></div>
+  </div>`;
+}
+function renderDiagChecklist(){
+  return `
+  <div class="card facet-sm">
+    <p class="small muted mb16">${tr('checklistDesc')}</p>
+    <div class="symptom-list">
+      ${SYMPTOM_BANK.map((s,i)=>`<button class="symptom-chip facet-sm ${STATE.selectedSymptoms.has(i)?'selected':''}" data-symptom="${i}">${L(s.label)}</button>`).join('')}
+    </div>
+    <button class="btn btn-accent facet-sm mt16" id="getDiagnosis">${tr('getDiagnosisBtn')}</button>
+    <div id="checklistOut" class="mt16"></div>
+  </div>`;
+}
+function renderDiagLibrary(){
+  return `<div class="libgrid">
+    ${DISEASES.filter(d=>d.id!=='healthy').map(d=>`
+    <div class="lib-card facet-sm">
+      <div class="flex items-center" style="justify-content:space-between"><h4>${L(d.name)}</h4><span class="pill badge-severity-${d.severity}">${tr('sev'+d.severity.charAt(0).toUpperCase()+d.severity.slice(1))}</span></div>
+      <div class="sci">${L(d.sci)} · ${L(d.cat)}</div>
+      <b class="small">${tr('likelySymptoms')}</b>
+      <ul>${L(d.symptoms).map(s=>`<li>${s}</li>`).join('')}</ul>
+      <b class="small">${tr('recommendedTreatment')}</b>
+      <ul>${L(d.treatment).map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>`).join('')}
+  </div>`;
+}
+function renderDiagLog(){
+  if(STATE.diagLogs.length===0) return `<div class="card facet-sm empty">${tr('emptyDiagLog')}</div>`;
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>${tr('colDate')}</th><th>${tr('colTree')}</th><th>${tr('colDiagnosis')}</th><th>${tr('colMethod')}</th><th>${tr('colConfidence')}</th></tr></thead>
+    <tbody>${STATE.diagLogs.slice().reverse().map(l=>`
+      <tr><td class="mono small">${l.date}</td><td class="mono">${l.treeId}</td><td>${L(diseaseById(l.diseaseId).name)}</td><td>${tr(l.methodKey)}</td><td class="mono">${l.confidence?l.confidence+'%':'—'}</td></tr>`).join('')}
+    </tbody></table></div>`;
+}
+function diagnosisResultHtml(matches, methodKey, thumbHtml){
+  const top = matches[0];
+  return `
+  <div class="preview-row">
+    ${thumbHtml||''}
+    <div class="result-card facet-sm">
+      <div class="flex items-center" style="justify-content:space-between">
+        <b>${L(top.disease.name)}</b>
+        <span class="pill badge-severity-${top.disease.severity}">${tr('sev'+top.disease.severity.charAt(0).toUpperCase()+top.disease.severity.slice(1))}</span>
+      </div>
+      <div class="small muted" style="font-style:italic">${L(top.disease.sci)}</div>
+      <div class="small muted mt8">${tr('matchConfidence')}</div>
+      <div class="confidence-bar"><div class="confidence-fill" style="width:${top.confidence}%"></div></div>
+      <div class="mono small" style="margin-top:4px">${top.confidence}%</div>
+      <div class="mt16"><b class="small">${tr('likelySymptoms')}</b><ul style="margin:6px 0 0;padding-left:16px;font-size:12px;color:var(--text-muted);line-height:1.6">${L(top.disease.symptoms).map(s=>`<li>${s}</li>`).join('')}</ul></div>
+      <div class="mt16"><b class="small">${tr('recommendedTreatment')}</b><ol style="margin:6px 0 0;padding-left:16px;font-size:12px;color:var(--text-muted);line-height:1.6">${L(top.disease.treatment).map(s=>`<li>${s}</li>`).join('')}</ol></div>
+      ${matches[1]&&matches[1].confidence>45?`<div class="small muted mt16">${tr('secondPossibility')} <b style="color:var(--text)">${L(matches[1].disease.name)}</b> (${matches[1].confidence}%)</div>`:''}
+      <div class="mt16 flex gap8" style="align-items:center;flex-wrap:wrap">
+        <select id="logTreeSelect" style="padding:8px 10px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);font-size:12.5px">
+          ${ORCHARD.trees.map(t=>`<option value="${t.id}">${t.id}</option>`).join('')}
+        </select>
+        <button class="btn btn-ghost btn-sm facet-sm" id="logDiagBtn" data-diseaseid="${top.disease.id}" data-methodkey="${methodKey}">${tr('logToTreeBtn')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- Fulfilment / Members ---- */
+function renderBFulfillment(){
+  const cols=[{k:'packaging',label:tr('colPackaging')},{k:'dispatched',label:tr('colDispatched')},{k:'delivered',label:tr('colDelivered')}];
+  return `
+  <div class="view-head"><div><h2>${tr('fulfilTitle')}</h2><p>${tr('fulfilDesc')}</p></div></div>
+  <div class="kanban">
+    ${cols.map(c=>{
+      const items = STATE.fulfillment.filter(f=>STATE.fulfillmentStages[f.id]===c.k);
+      return `<div class="kancol"><h4>${c.label}<span>${items.length}</span></h4>
+        ${items.map(f=>{
+          const mem = ORCHARD.members[f.memberIdx];
+          return `<div class="kancard facet-sm"><b>${f.tree} · ${f.kg}kg</b><span>${householdName(mem.household)}</span><br><span class="pill pill-neutral mt8" style="margin-top:6px">${tr(f.type)}</span></div>`;
+        }).join('')||`<p class="small muted">${tr('emptyCol')}</p>`}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+function renderBMembers(){
+  return `
+  <div class="view-head"><div><h2>${tr('membersTitle')}</h2><p>${tr('membersDesc')}</p></div></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>${tr('colHousehold')}</th><th>${tr('colGroup')}</th><th>${tr('colPlanMonth')}</th><th>${tr('statusCol')}</th><th>${tr('colReferrals')}</th><th>${tr('colCredits')}</th></tr></thead>
+    <tbody>${ORCHARD.members.map(m=>`
+      <tr><td>${householdName(m.household)}</td><td class="mono">${m.group}</td><td class="mono">${m.joinMonth}/24</td>
+      <td><span class="pill ${m.boxOpened?'pill-good':'pill-warn'}">${m.boxOpened?tr('statusActive'):tr('statusAwaiting')}</span></td>
+      <td class="mono">${m.referrals}</td><td class="mono">RM ${m.credits}</td></tr>`).join('')}
+    </tbody></table></div>`;
+}
+
+/* ================= EVENTS ================= */
+function wireEvents(){
+  document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',()=>setView(el.getAttribute('data-nav'))));
+  document.querySelectorAll('[data-lang]').forEach(el=>el.addEventListener('click',()=>setLang(el.getAttribute('data-lang'))));
+  document.querySelectorAll('[data-msub]').forEach(el=>el.addEventListener('click',()=>{STATE.memberSub=el.getAttribute('data-msub');render();}));
+  document.querySelectorAll('[data-bsub]').forEach(el=>el.addEventListener('click',()=>{STATE.backSub=el.getAttribute('data-bsub');render();}));
+  const msel=document.getElementById('memberSelect');
+  if(msel) msel.addEventListener('change',e=>{STATE.currentMemberId=e.target.value; STATE.memberSub='dashboard'; render();});
+
+  document.querySelectorAll('[data-box]').forEach(el=>el.addEventListener('click',()=>{
+    if(el.classList.contains('revealed'))return;
+    el.classList.add('revealed');
+    const all=document.querySelectorAll('.boxcard');
+    if([...all].every(c=>c.classList.contains('revealed'))){
+      const btn=document.getElementById('finishReveal'); if(btn)btn.style.display='inline-flex';
+    }
+  }));
+  const finishBtn=document.getElementById('finishReveal');
+  if(finishBtn) finishBtn.addEventListener('click',()=>{
+    const m=currentMember(); m.boxOpened=true; render();
+  });
+
+  document.querySelectorAll('[data-treeid]').forEach(el=>el.addEventListener('click',()=>{
+    document.body.insertAdjacentHTML('beforeend',treeDetailModal(el.getAttribute('data-treeid')));
+    document.getElementById('modalClose').addEventListener('click',closeModal);
+    document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal();});
+  }));
+
+  const allocInputs = document.querySelectorAll('[data-alloc]');
+  if(allocInputs.length){
+    const normalize=()=>{
+      const vals={}; let total=0;
+      allocInputs.forEach(i=>{vals[i.getAttribute('data-alloc')]=parseInt(i.value);total+=parseInt(i.value);});
+      document.getElementById('allocTotal').textContent = total+'%';
+      const totalKg = 24;
+      allocInputs.forEach(i=>{
+        const k=i.getAttribute('data-alloc');
+        document.querySelector(`[data-allocval="${k}"]`).textContent = (totalKg*(vals[k]/ (total||1))).toFixed(1)+' kg';
+      });
+    };
+    allocInputs.forEach(i=>i.addEventListener('input',normalize));
+    normalize();
+  }
+  const giftBtn=document.getElementById('genGiftCard');
+  if(giftBtn) giftBtn.addEventListener('click',()=>{
+    const m=currentMember(); const t=treesInGroup(m.group).find(tt=>tt.stage==='Harvest-Ready'||tt.stage==='Harvested');
+    document.getElementById('giftCardOut').innerHTML = `
+    <div class="card facet-sm mt16" style="background:var(--primary-soft);box-shadow:none">
+      <div class="mono small" style="color:var(--primary-strong)">${tr('giftCardLabel')}</div>
+      <h3 style="margin-top:8px;font-size:17px">${trf('giftCardTitle',{id:t?t.id:''})}</h3>
+      <p class="small mt8" style="color:var(--primary-strong)">${trf('giftCardDesc',{name:householdName(m.household),n:m.joinMonth})}</p>
+    </div>`;
+  });
+
+  document.querySelectorAll('[data-diagtab]').forEach(el=>el.addEventListener('click',()=>{
+    STATE.diagTab=el.getAttribute('data-diagtab'); render();
+  }));
+  const pinput=document.getElementById('photoInput');
+  if(pinput) pinput.addEventListener('change',async e=>{
+    const file=e.target.files[0]; if(!file)return;
+    document.getElementById('analysisOut').innerHTML = `<p class="small muted">${tr('analysing')}</p>`;
+    const sample = await analyzeImageFile(file);
+    const matches = matchDisease(sample);
+    document.getElementById('analysisOut').innerHTML = diagnosisResultHtml(matches,'methodPhoto',`<img class="preview-thumb facet-sm" src="${sample.dataUrl}">`);
+    wireDiagLogButton();
+  });
+  document.querySelectorAll('[data-symptom]').forEach(el=>el.addEventListener('click',()=>{
+    const idx=parseInt(el.getAttribute('data-symptom'));
+    if(STATE.selectedSymptoms.has(idx)) STATE.selectedSymptoms.delete(idx); else STATE.selectedSymptoms.add(idx);
+    el.classList.toggle('selected');
+  }));
+  const getDiagBtn=document.getElementById('getDiagnosis');
+  if(getDiagBtn) getDiagBtn.addEventListener('click',()=>{
+    if(STATE.selectedSymptoms.size===0){document.getElementById('checklistOut').innerHTML=`<p class="small muted">${tr('selectAtLeastOne')}</p>`;return;}
+    const scores={};
+    STATE.selectedSymptoms.forEach(i=>{
+      const s=SYMPTOM_BANK[i];
+      Object.entries(s.map).forEach(([id,w])=>{scores[id]=(scores[id]||0)+w;});
+    });
+    const maxScore=Math.max(...Object.values(scores));
+    const matches = Object.entries(scores).map(([id,sc])=>({disease:diseaseById(id),confidence:Math.round(40+sc/maxScore*55)})).sort((a,b)=>b.confidence-a.confidence);
+    document.getElementById('checklistOut').innerHTML = diagnosisResultHtml(matches,'methodChecklist','');
+    wireDiagLogButton();
+  });
+}
+function wireDiagLogButton(){
+  const btn=document.getElementById('logDiagBtn');
+  if(!btn)return;
+  btn.addEventListener('click',()=>{
+    const treeId=document.getElementById('logTreeSelect').value;
+    const diseaseId=btn.getAttribute('data-diseaseid');
+    const methodKey=btn.getAttribute('data-methodkey');
+    STATE.diagLogs.push({treeId,diseaseId,methodKey,date:STATE.lang==='zh'?'2026年8月28日':'28 Aug 2026',confidence:null});
+    const tr2=ORCHARD.trees.find(t=>t.id===treeId);
+    if(tr2 && diseaseId!=='healthy'){tr2.health='Issue';tr2.issueId=diseaseId;}
+    btn.textContent=tr('loggedBtn'); btn.disabled=true;
+  });
+}
+function closeModal(){const b=document.getElementById('modalBackdrop'); if(b)b.remove();}
+
+render();
+</script>
+
+</body>
+</html>
